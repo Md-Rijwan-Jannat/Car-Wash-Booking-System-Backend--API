@@ -1,11 +1,8 @@
-import { NextFunction, Request, Response } from "express";
+import { ErrorRequestHandler } from "express";
 
-const globalError = (
-  err: any,
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const globalError: ErrorRequestHandler = (err, req, res, next) => {
+  console.log(err);
+
   const statusCode: number = 500;
   const message = err.message || "Internal server error";
 
@@ -13,6 +10,7 @@ const globalError = (
     status: statusCode,
     success: false,
     message: message,
+    err,
   });
 };
 
