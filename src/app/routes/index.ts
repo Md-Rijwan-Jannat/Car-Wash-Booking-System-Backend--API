@@ -2,7 +2,10 @@ import { Router } from "express";
 import { CarServiceRoutes } from "../modules/carService/carService.routes";
 import { SignUpUserRoutes } from "../modules/signUpUser/signUpUser.routes";
 import { CarBookingSlotRoutes } from "../modules/carBookingSlot/carBookingSlot.routes";
-import { CarServiceBookingRoutes } from "../modules/carBooking/carServiceBooking.routes";
+import {
+  CarServiceBookingRoutes,
+  MyCarServiceBookingRoutes,
+} from "../modules/carServiceBooking/carServiceBooking.routes";
 
 const router = Router();
 
@@ -22,6 +25,10 @@ const appRoutesModel = [
   {
     path: "/bookings",
     routeFile: CarServiceBookingRoutes,
+  },
+  {
+    path: "/my-bookings",
+    routeFile: MyCarServiceBookingRoutes,
   },
 ];
 

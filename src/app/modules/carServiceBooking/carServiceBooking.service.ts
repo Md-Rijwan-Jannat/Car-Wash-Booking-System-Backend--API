@@ -57,7 +57,17 @@ const createCarServiceBookingIntoDB = async (payload: ICarServiceBooking) => {
   }
 };
 
+// ---> get all car service booking data
 const getAllCarServiceBookingFromDB = async () => {
+  const result = await CarServiceBooking.find()
+    .populate("serviceId")
+    .populate("slotId");
+
+  return result;
+};
+
+// ---> get all my car service booking data
+const getAllMyCarServiceBookingFromDB = async () => {
   const result = await CarServiceBooking.find()
     .populate("serviceId")
     .populate("slotId");
@@ -68,4 +78,5 @@ const getAllCarServiceBookingFromDB = async () => {
 export const CarServiceBookingService = {
   createCarServiceBookingIntoDB,
   getAllCarServiceBookingFromDB,
+  getAllMyCarServiceBookingFromDB,
 };

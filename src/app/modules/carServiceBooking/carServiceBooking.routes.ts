@@ -15,4 +15,7 @@ router.post(
 
 router.get("/", CarServiceBookingController.getAllCarServiceBooking);
 
+router.get("/", CarServiceBookingController.getAllMyCarServiceBooking);
+
 export const CarServiceBookingRoutes = router;
+export const MyCarServiceBookingRoutes = router;
