@@ -1,9 +1,9 @@
-import express from "express";
+import { Router } from "express";
 import { ValidationRequest } from "../../middlewares/ValidationRequest";
 import { CarBookingSlotValidation } from "./carBookingSlot.validation";
 import { CarBookingSlotController } from "./carBookingSlot.controller";
 
-const router = express.Router();
+const router = Router();
 
 router.post(
   "/",
@@ -11,6 +11,11 @@ router.post(
     CarBookingSlotValidation.createCarBookingSlotValidationSchema,
   ),
   CarBookingSlotController.createCarBookingSlot,
+);
+
+router.get(
+  "/availability",
+  CarBookingSlotController.getAllAvailableCarBookingSlot,
 );
 
 export const CarBookingSlotRoutes = router;

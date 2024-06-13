@@ -1,9 +1,9 @@
-import express from "express";
+import { Router } from "express";
 import { CarServiceController } from "./carService.controller";
 import { ValidationRequest } from "../../middlewares/ValidationRequest";
 import { CarServiceValidation } from "./carService.validation";
 
-const router = express.Router();
+const router = Router();
 
 router.post(
   "/",

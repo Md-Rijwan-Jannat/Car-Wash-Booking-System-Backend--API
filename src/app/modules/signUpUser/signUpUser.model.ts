@@ -1,5 +1,7 @@
 import { Schema, model } from "mongoose";
 import { ISignUPUser } from "./signUpUser.interface";
+import bcrypt from "bcrypt";
+import config from "../../config";
 
 export const signUpUserSchema = new Schema<ISignUPUser>(
   {
@@ -41,5 +43,26 @@ export const signUpUserSchema = new Schema<ISignUPUser>(
     timestamps: true,
   },
 );
+
+// ---> use pre-hook for hashing password
+signUpUserSchema.pre("save", async function (next) {
+  try {
+    const user = this;
+    if (user.isModified("password")) {
+      const saltRound = Number(config.bcrypt_rounds_salt);
+      const hasPassword = await bcrypt.hash(user.password, saltRound);
+      user.password = hasPassword;
+    }
+    next();
+  } catch (error: any) {
+    next(error);
+  }
+});
+
+// ---> use pre-hook and make empty password field
+signUpUserSchema.post("save", async (doc, next) => {
+  doc.password = "";
+  next();
+});
 
 export const SignUPUser = model<ISignUPUser>("SignUpUser", signUpUserSchema);

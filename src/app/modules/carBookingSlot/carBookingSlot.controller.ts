@@ -17,6 +17,20 @@ const createCarBookingSlot = CatchAsync(async (req, res) => {
   });
 });
 
+// ---> create car booking slot controller
+const getAllAvailableCarBookingSlot = CatchAsync(async (req, res) => {
+  const result =
+    await CarBookingSlotService.getAllAvailableCarBookingSlotsFromDB();
+
+  SendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Available slots retrieved successfully",
+    data: result,
+  });
+});
+
 export const CarBookingSlotController = {
   createCarBookingSlot,
+  getAllAvailableCarBookingSlot,
 };

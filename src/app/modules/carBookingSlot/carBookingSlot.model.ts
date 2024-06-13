@@ -5,6 +5,7 @@ export const CarBookingSlotSchema = new Schema<ICarBookingSlot>({
   service: {
     type: Schema.Types.ObjectId,
     required: [true, "Service ID is required"],
+    ref: "CarService",
     trim: true,
   },
   date: {
@@ -21,6 +22,11 @@ export const CarBookingSlotSchema = new Schema<ICarBookingSlot>({
     type: String,
     required: [true, "End time is required"],
     trim: true,
+  },
+  isBooked: {
+    type: String,
+    enum: ["available", "booked", "canceled"],
+    default: "available",
   },
 });
 
