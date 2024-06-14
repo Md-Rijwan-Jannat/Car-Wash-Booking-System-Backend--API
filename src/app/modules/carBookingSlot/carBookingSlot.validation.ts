@@ -5,7 +5,7 @@ const timeRegex = /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])$/;
 const startTimeSchema = z
   .string({
     required_error: "Start time is required",
-    invalid_type_error: "Start time must be a string",
+    invalid_type_error: "Start time should be 'HH:MM' format",
   })
   .refine((time) => {
     return timeRegex.test(time);
@@ -14,7 +14,7 @@ const startTimeSchema = z
 const endTimeSchema = z
   .string({
     required_error: "End time is required",
-    invalid_type_error: "End time must be a string",
+    invalid_type_error: "End time should be 'HH:MM' format",
   })
   .refine((time) => {
     return timeRegex.test(time);
@@ -34,12 +34,17 @@ const createCarBookingSlotValidationSchema = z.object({
       startTime: startTimeSchema,
       endTime: endTimeSchema,
     })
-    .refine((body) => {
-      const start = new Date(`1970-01-01T${body.startTime}:00`);
-      const end = new Date(`1970-01-01T${body.endTime}:00`);
+    .refine(
+      (body) => {
+        const start = new Date(`1970-01-01T${body.startTime}:00`);
+        const end = new Date(`1970-01-01T${body.endTime}:00`);
 
-      return end > start;
-    }),
+        return end > start;
+      },
+      {
+        message: "Start time should be  before end time",
+      },
+    ),
 });
 
 export const CarBookingSlotValidation = {

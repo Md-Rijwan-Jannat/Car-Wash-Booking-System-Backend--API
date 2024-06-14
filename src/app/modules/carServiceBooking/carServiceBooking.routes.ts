@@ -7,9 +7,9 @@ const router = Router();
 
 router.post(
   "/",
-  ValidationRequest(
-    CarServiceBookingValidation.createCarServiceBookingValidationSchema,
-  ),
+  // ValidationRequest(
+  //   CarServiceBookingValidation.createCarServiceBookingValidationSchema,
+  // ),
   CarServiceBookingController.createCarServiceBooking,
 );
 

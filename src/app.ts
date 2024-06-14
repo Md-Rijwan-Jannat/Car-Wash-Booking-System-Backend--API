@@ -17,6 +17,7 @@ app.use("/api", Routes);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
+  Promise.reject();
 });
 
 // not found error handler

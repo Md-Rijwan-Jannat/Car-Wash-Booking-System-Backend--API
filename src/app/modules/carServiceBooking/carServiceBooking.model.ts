@@ -21,7 +21,10 @@ const carServiceBookingSchema = new Schema<ICarServiceBooking>(
     vehicleType: {
       type: String,
       required: [true, "Vehicle type is required"],
-      enum: vehicleTypeArray,
+      enum: {
+        values: vehicleTypeArray,
+        message: "Vehicle type must be one of: {VALUE}",
+      },
       trim: true,
     },
     vehicleBrand: {
