@@ -21,6 +21,8 @@ const createCarServiceBooking = CatchAsync(async (req, res) => {
 const getAllCarServiceBooking = CatchAsync(async (req, res) => {
   const result = await CarServiceBookingService.getAllCarServiceBookingFromDB();
 
+  console.log(req.user);
+
   SendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

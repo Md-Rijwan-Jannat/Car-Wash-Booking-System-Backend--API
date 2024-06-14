@@ -2,11 +2,14 @@ import { Router } from "express";
 import { ValidationRequest } from "../../middlewares/ValidationRequest";
 import { CarBookingSlotValidation } from "./carBookingSlot.validation";
 import { CarBookingSlotController } from "./carBookingSlot.controller";
+import { Auth } from "../../middlewares/Auth";
+import { USER_ROLE } from "../signUpUser/signUpUser.constants";
 
 const router = Router();
 
 router.post(
   "/",
+  Auth(USER_ROLE.admin),
   ValidationRequest(
     CarBookingSlotValidation.createCarBookingSlotValidationSchema,
   ),

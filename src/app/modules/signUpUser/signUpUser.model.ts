@@ -1,9 +1,9 @@
 import { Schema, model } from "mongoose";
-import { ISignUPUser } from "./signUpUser.interface";
+import { ISignUPUser, ISignUpUserModel } from "./signUpUser.interface";
 import bcrypt from "bcrypt";
 import config from "../../config";
 
-export const signUpUserSchema = new Schema<ISignUPUser>(
+export const signUpUserSchema = new Schema<ISignUPUser, ISignUpUserModel>(
   {
     name: {
       type: String,
@@ -20,6 +20,7 @@ export const signUpUserSchema = new Schema<ISignUPUser>(
       type: String,
       required: [true, "Password is required"],
       trim: true,
+      select: 0,
     },
     phone: {
       type: String,
@@ -65,4 +66,20 @@ signUpUserSchema.post("save", async (doc, next) => {
   next();
 });
 
-export const SignUPUser = model<ISignUPUser>("SignUpUser", signUpUserSchema);
+// ---> check login request use is exist
+signUpUserSchema.statics.isSignUpUserExisting = async function (email: string) {
+  return await SignUPUser.findOne({ email }).select("+password");
+};
+
+// ---> check the password is match
+signUpUserSchema.statics.isSignUpUserPasswordMatch = async function (
+  resendLoginPassword: string,
+  hashPassword: string,
+) {
+  return await bcrypt.compare(resendLoginPassword, hashPassword);
+};
+
+export const SignUPUser = model<ISignUPUser, ISignUpUserModel>(
+  "SignUpUser",
+  signUpUserSchema,
+);
