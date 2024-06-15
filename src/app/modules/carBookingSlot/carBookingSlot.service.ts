@@ -6,8 +6,6 @@ import { CarBookingSlot } from "./carBookingSlot.model";
 import { GenerateTimeSlots } from "./carBookingSlot.utils";
 
 const createCrBookingSlotIntoDB = async (payload: ICarBookingSlot) => {
-  console.log(payload);
-
   const isCarServiceExisting = await CarService.findById(payload.service);
 
   // ---> check if the service exists

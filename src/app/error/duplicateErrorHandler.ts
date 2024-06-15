@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { IErrorResponse, TErrorMessages } from "../interface/error.interface";
 
 const duplicateErrorHandler = (err: any): IErrorResponse => {

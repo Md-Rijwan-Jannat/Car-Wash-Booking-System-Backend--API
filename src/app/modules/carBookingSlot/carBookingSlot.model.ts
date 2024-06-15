@@ -1,7 +1,5 @@
 import { Schema, model } from "mongoose";
 import { ICarBookingSlot } from "./carBookingSlot.interface";
-import { AppError } from "../../error/AppError";
-import httpStatus from "http-status";
 
 export const CarBookingSlotSchema = new Schema<ICarBookingSlot>({
   service: {
