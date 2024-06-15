@@ -5,8 +5,11 @@ import { CarServiceBookingService } from "./carServiceBooking.service";
 
 // ---> car service booking controller
 const createCarServiceBooking = CatchAsync(async (req, res) => {
+  const { email } = req.user;
+
   const result = await CarServiceBookingService.createCarServiceBookingIntoDB(
     req.body,
+    email,
   );
 
   SendResponse(res, {
@@ -21,8 +24,6 @@ const createCarServiceBooking = CatchAsync(async (req, res) => {
 const getAllCarServiceBooking = CatchAsync(async (req, res) => {
   const result = await CarServiceBookingService.getAllCarServiceBookingFromDB();
 
-  console.log(req.user);
-
   SendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -33,7 +34,11 @@ const getAllCarServiceBooking = CatchAsync(async (req, res) => {
 
 // ---> get all my car service booking controller
 const getAllMyCarServiceBooking = CatchAsync(async (req, res) => {
-  const result = await CarServiceBookingService.getAllCarServiceBookingFromDB();
+  const result = await CarServiceBookingService.getAllMyCarServiceBookingFromDB(
+    req.user,
+  );
+
+  console.log(req.user);
 
   SendResponse(res, {
     statusCode: httpStatus.OK,

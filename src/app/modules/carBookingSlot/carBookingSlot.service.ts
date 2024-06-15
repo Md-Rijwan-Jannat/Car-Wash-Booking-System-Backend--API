@@ -5,7 +5,6 @@ import { ICarBookingSlot } from "./carBookingSlot.interface";
 import { CarBookingSlot } from "./carBookingSlot.model";
 import { GenerateTimeSlots } from "./carBookingSlot.utils";
 
-// ---> create car booking slot service
 const createCrBookingSlotIntoDB = async (payload: ICarBookingSlot) => {
   console.log(payload);
 
@@ -19,18 +18,32 @@ const createCrBookingSlotIntoDB = async (payload: ICarBookingSlot) => {
   // ---> service duration in minutes
   const duration = isCarServiceExisting.duration;
 
-  // ---> generate slots
-  const slots = GenerateTimeSlots(payload, duration);
+  try {
+    // ---> generate slots
+    const slots = await GenerateTimeSlots(payload, duration);
 
-  // ---> Save all slots to the database
-  const result = await CarBookingSlot.insertMany(slots);
-  return result;
+    if (slots.length === 0) {
+      throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");
+    }
+
+    // ---> Save all slots to the database
+    const result = await CarBookingSlot.insertMany(slots);
+
+    return result;
+  } catch (error: any) {
+    // Handle specific errors from slot generation
+    throw new AppError(httpStatus.BAD_REQUEST, error.message);
+  }
 };
 
 const getAllAvailableCarBookingSlotsFromDB = async () => {
   const result = await CarBookingSlot.find({ isBooked: "available" }).populate(
     "service",
   );
+
+  if (result.length === 0) {
+    throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");
+  }
   return result;
 };
 

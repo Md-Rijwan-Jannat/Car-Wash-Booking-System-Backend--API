@@ -1,3 +1,5 @@
+import httpStatus from "http-status";
+import { AppError } from "../../error/AppError";
 import { ICarService } from "./carService.interface";
 import { CarService } from "./carService.model";
 
@@ -10,12 +12,22 @@ const createCarServiceIntoDB = async (payload: ICarService) => {
 // ---> get single car service service
 const getSingleCarServiceFromDB = async (id: string) => {
   const result = await CarService.findById(id);
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");
+  }
+
   return result;
 };
 
 // ---> get all car services service
 const getAllCarServiceFromDB = async () => {
   const result = await CarService.find();
+
+  if (result.length === 0) {
+    throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");
+  }
+
   return result;
 };
 
@@ -28,6 +40,11 @@ const updateSingleCarServiceIntoDB = async (
     new: true,
     runValidators: true,
   });
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");
+  }
+
   return result;
 };
 
@@ -43,6 +60,11 @@ const deleteSingleCarServiceIntoDB = async (id: string) => {
       runValidators: true,
     },
   );
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");
+  }
+
   return result;
 };
 

@@ -18,7 +18,7 @@ router.get("/:id", CarServiceController.getSingleCarService);
 
 router.get("/", CarServiceController.getAllCarService);
 
-router.patch(
+router.put(
   "/:id",
   Auth(USER_ROLE.admin),
   ValidationRequest(CarServiceValidation.updateCarServiceValidationSchema),

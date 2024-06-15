@@ -1,7 +1,11 @@
 import { ICarBookingSlot } from "./carBookingSlot.interface";
+import { CarBookingSlot } from "./carBookingSlot.model";
 
 // carBookingSlot.utils.ts
-const generateTimeSlots = (payload: ICarBookingSlot, duration: number) => {
+const generateTimeSlots = async (
+  payload: ICarBookingSlot,
+  duration: number,
+) => {
   const slots = [];
 
   const [startTimeHours, startTimeMinutes] = payload.startTime
@@ -30,11 +34,33 @@ const generateTimeSlots = (payload: ICarBookingSlot, duration: number) => {
     const endHour = String(Math.floor(slotEndTime / 60)).padStart(2, "0");
     const endMinute = String(slotEndTime % 60).padStart(2, "0");
 
+    const startTime = `${startHour}:${startMinute}`;
+    const endTime = `${endHour}:${endMinute}`;
+
+    // Check if a slot with the same service, date, and time exists
+    const existingSlot = await CarBookingSlot.findOne({
+      service: payload.service,
+      date: payload.date,
+      startTime: startTime,
+      endTime: endTime,
+    });
+
+    if (existingSlot) {
+      if (
+        existingSlot.isBooked === "available" ||
+        existingSlot.isBooked === "canceled"
+      ) {
+        throw new Error(
+          `This slot service at ${startTime} to ${endTime} is ${existingSlot.isBooked === "available" ? "already" : ""} ${existingSlot.isBooked}`,
+        );
+      }
+    }
+
     slots.push({
       service: payload.service,
       date: payload.date,
-      startTime: `${startHour}:${startMinute}`,
-      endTime: `${endHour}:${endMinute}`,
+      startTime: startTime,
+      endTime: endTime,
     });
 
     currentTime += duration;

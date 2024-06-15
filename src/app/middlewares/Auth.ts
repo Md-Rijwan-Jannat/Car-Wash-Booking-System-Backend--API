@@ -11,7 +11,7 @@ const auth = (...requiredUserRole: TUserRole[]) => {
     const token = req.headers.authorization?.replace("Bearer ", "");
 
     if (!token) {
-      throw new AppError(httpStatus.BAD_REQUEST, "You are not authorized");
+      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
     }
 
     const decoded = jwt.verify(
@@ -24,11 +24,14 @@ const auth = (...requiredUserRole: TUserRole[]) => {
     const user = await SignUPUser.findOne({ email });
 
     if (!user) {
-      throw new AppError(httpStatus.BAD_REQUEST, "You are not authorized");
+      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
     }
 
     if (requiredUserRole && !requiredUserRole.includes(role)) {
-      throw new AppError(httpStatus.BAD_REQUEST, "You are not authorized");
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        "You have no access to this route",
+      );
     }
 
     req.user = decoded as JwtPayload;
