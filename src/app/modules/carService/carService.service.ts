@@ -5,6 +5,13 @@ import { CarService } from "./carService.model";
 
 // ---> create car service service
 const createCarServiceIntoDB = async (payload: ICarService) => {
+  const carService = await CarService.isCarServiceExists(payload.name);
+  if (carService) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "This car service already exists",
+    );
+  }
   const result = await CarService.create(payload);
   return result;
 };

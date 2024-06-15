@@ -1,7 +1,9 @@
 import { Schema, model } from "mongoose";
-import { ICarService } from "./carService.interface";
+import { ICarService, ICarServiceModel } from "./carService.interface";
+import { AppError } from "../../error/AppError";
+import httpStatus from "http-status";
 
-export const carServiceSchema = new Schema<ICarService>(
+export const carServiceSchema = new Schema<ICarService, ICarServiceModel>(
   {
     name: {
       type: String,
@@ -33,4 +35,27 @@ export const carServiceSchema = new Schema<ICarService>(
   },
 );
 
-export const CarService = model<ICarService>("CarService", carServiceSchema);
+// Query Middleware
+carServiceSchema.pre("find", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+carServiceSchema.pre("findOne", function (next) {
+  this.find({ isDeleted: { $ne: true } });
+  next();
+});
+
+carServiceSchema.pre("aggregate", function (next) {
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+  next();
+});
+
+carServiceSchema.statics.isCarServiceExists = async function (name: string) {
+  return await this.findOne({ name });
+};
+
+export const CarService = model<ICarService, ICarServiceModel>(
+  "CarService",
+  carServiceSchema,
+);
