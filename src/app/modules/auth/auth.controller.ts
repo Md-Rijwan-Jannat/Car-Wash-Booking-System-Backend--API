@@ -8,7 +8,7 @@ import config from "../../config";
 const authLogin = CatchAsync(async (req, res) => {
   const result = await AuthLoginService.authLogin(req.body);
 
-  const { accessToken, refreshToken, user } = result;
+  const { accessToken, refreshToken, userData } = result;
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
@@ -20,7 +20,7 @@ const authLogin = CatchAsync(async (req, res) => {
     success: true,
     message: "User logged in successfully",
     token: accessToken,
-    data: user,
+    data: userData[0],
   });
 });
 

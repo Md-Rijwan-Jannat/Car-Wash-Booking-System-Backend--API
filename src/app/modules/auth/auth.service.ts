@@ -11,6 +11,9 @@ import jwt from "jsonwebtoken";
 // ---> user login service
 const authLogin = async (payload: IAuthLogin) => {
   const user = await SignUPUser.isSignUpUserExisting(payload.email);
+  const isUserExisting = await SignUPUser.find({ email: payload.email }).select(
+    "-password",
+  );
 
   if (!user) {
     throw new AppError(httpStatus.FORBIDDEN, "This user does not exist");
@@ -47,7 +50,7 @@ const authLogin = async (payload: IAuthLogin) => {
   return {
     accessToken,
     refreshToken,
-    user,
+    userData: isUserExisting,
   };
 };
 

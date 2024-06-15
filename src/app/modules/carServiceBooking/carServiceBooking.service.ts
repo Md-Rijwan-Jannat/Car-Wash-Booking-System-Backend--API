@@ -2,15 +2,15 @@ import httpStatus from "http-status";
 import mongoose from "mongoose";
 import { AppError } from "../../error/AppError";
 import { CarService } from "../carService/carService.model";
-import { ICarServiceBooking } from "./carServiceBooking.interface";
+import { ICarServiceBookingPayload } from "./carServiceBooking.interface";
 import { CarServiceBooking } from "./carServiceBooking.model";
 import { CarBookingSlot } from "../carBookingSlot/carBookingSlot.model";
 import { SignUPUser } from "../signUpUser/signUpUser.model";
 import { JwtPayload } from "jsonwebtoken";
 
-// ---> create car booking service with transaction
+// Create car booking service with transaction
 const createCarServiceBookingIntoDB = async (
-  payload: ICarServiceBooking,
+  payload: ICarServiceBookingPayload,
   email: string,
 ) => {
   const session = await mongoose.startSession();
@@ -56,7 +56,18 @@ const createCarServiceBookingIntoDB = async (
 
     // Create the car service booking
     const result = await CarServiceBooking.create(
-      [{ ...payload, customer: customer?._id }],
+      [
+        {
+          customer: customer._id,
+          service: payload.serviceId,
+          slot: payload.slotId,
+          vehicleType: payload.vehicleType,
+          vehicleBrand: payload.vehicleBrand,
+          vehicleModel: payload.vehicleModel,
+          manufacturingYear: payload.manufacturingYear,
+          registrationPlate: payload.registrationPlate,
+        },
+      ],
       {
         session,
       },
@@ -65,8 +76,8 @@ const createCarServiceBookingIntoDB = async (
     // Populate the result with related data
     const populateResult = await CarServiceBooking.findById(result[0]._id)
       .populate("customer")
-      .populate("serviceId")
-      .populate("slotId")
+      .populate("service")
+      .populate("slot")
       .session(session);
 
     // Commit the transaction
@@ -86,8 +97,8 @@ const createCarServiceBookingIntoDB = async (
 const getAllCarServiceBookingFromDB = async () => {
   const result = await CarServiceBooking.find()
     .populate("customer")
-    .populate("serviceId")
-    .populate("slotId");
+    .populate("service")
+    .populate("slot");
 
   if (result.length === 0) {
     throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");
@@ -102,8 +113,8 @@ const getAllMyCarServiceBookingFromDB = async (payload: JwtPayload) => {
 
   const result = await CarServiceBooking.find({ customer: isUserExisting?._id })
     .select("-customer")
-    .populate("serviceId")
-    .populate("slotId");
+    .populate("service")
+    .populate("slot");
 
   if (result.length === 0) {
     throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");

@@ -4,30 +4,34 @@ import { vehicleTypeArray } from "./carServiceBooking.constants";
 const createCarServiceBookingValidationSchema = z.object({
   body: z.object({
     customer: z
-      .string({ invalid_type_error: "Customer ID is must be a string" })
+      .string({ invalid_type_error: "Customer ID must be a string" })
       .optional(),
     serviceId: z
       .string({
         required_error: "Service ID is required",
-        invalid_type_error: "Service ID is must be a string",
+        invalid_type_error: "Service ID must be a string",
       })
       .trim(),
     slotId: z
       .string({
         required_error: "Slot ID is required",
-        invalid_type_error: "Slot ID is must be a string",
+        invalid_type_error: "Slot ID must be a string",
       })
       .trim(),
-    vehicleType: z.string(
-      z.enum([...(vehicleTypeArray as [string, ...string[]])], {
-        required_error: "Vehicle Type is required",
-        invalid_type_error: "Invalid Vehicle Type",
-      }),
-    ),
+    vehicleType: z.enum([...(vehicleTypeArray as [string, ...string[]])], {
+      required_error: "Vehicle Type is required",
+      invalid_type_error: "Invalid Vehicle Type",
+    }),
     vehicleBrand: z
       .string({
         required_error: "Vehicle brand is required",
-        invalid_type_error: "Vehicle brand is must be a string",
+        invalid_type_error: "Vehicle brand must be a string",
+      })
+      .trim(),
+    vehicleModel: z
+      .string({
+        required_error: "Vehicle model is required",
+        invalid_type_error: "Vehicle model must be a string",
       })
       .trim(),
     manufacturingYear: z.number({

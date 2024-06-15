@@ -19,10 +19,6 @@ const generateTimeSlots = async (
   const totalSlotTime = totalEndTime - totalStartTime;
   const totalSlots = totalSlotTime / duration;
 
-  if (totalSlots !== Math.floor(totalSlots)) {
-    throw new Error("Time range does not divide evenly into slots");
-  }
-
   let currentTime = totalStartTime;
 
   for (let i = 0; i < totalSlots; i++) {

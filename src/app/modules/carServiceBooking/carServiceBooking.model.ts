@@ -8,12 +8,12 @@ const carServiceBookingSchema = new Schema<ICarServiceBooking>(
       type: Schema.Types.ObjectId,
       ref: "SignUpUser",
     },
-    serviceId: {
+    service: {
       type: Schema.Types.ObjectId,
       required: [true, "Service ID is required"],
       ref: "CarService",
     },
-    slotId: {
+    slot: {
       type: Schema.Types.ObjectId,
       required: [true, "Slot ID is required"],
       ref: "CarBookingSlot",
@@ -30,6 +30,11 @@ const carServiceBookingSchema = new Schema<ICarServiceBooking>(
     vehicleBrand: {
       type: String,
       required: [true, "Vehicle brand is required"],
+      trim: true,
+    },
+    vehicleModel: {
+      type: String,
+      required: [true, "Vehicle model is required"],
       trim: true,
     },
     manufacturingYear: {

@@ -14,10 +14,17 @@ export type TVehicleType =
 
 export interface ICarServiceBooking {
   customer?: Types.ObjectId;
-  serviceId: Types.ObjectId;
-  slotId: Types.ObjectId;
+  service: Types.ObjectId;
+  slot: Types.ObjectId;
   vehicleType: TVehicleType;
   vehicleBrand: string;
+  vehicleModel: string;
   manufacturingYear: number;
   registrationPlate: string;
+}
+
+export interface ICarServiceBookingPayload
+  extends Omit<ICarServiceBooking, "service" | "slot"> {
+  serviceId: string;
+  slotId: string;
 }
