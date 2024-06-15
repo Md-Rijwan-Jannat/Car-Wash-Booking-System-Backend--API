@@ -38,8 +38,6 @@ const getAllMyCarServiceBooking = CatchAsync(async (req, res) => {
     req.user,
   );
 
-  console.log(req.user);
-
   SendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

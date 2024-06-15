@@ -19,7 +19,7 @@ router_1.post(
 
 router_1.get(
   "/",
-  Auth(USER_ROLE.admin),
+  Auth(USER_ROLE.admin), // Ensure this matches the admin role
   CarServiceBookingController.getAllCarServiceBooking,
 );
 

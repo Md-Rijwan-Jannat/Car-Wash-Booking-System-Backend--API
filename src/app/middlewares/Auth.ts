@@ -27,9 +27,22 @@ const auth = (...requiredUserRole: TUserRole[]) => {
       throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
     }
 
+    const passwordChangeTimestamp =
+      new Date(user.passwordCreatedAt as Date).getTime() / 1000;
+
+    if (
+      user?.passwordCreatedAt &&
+      (await SignUPUser.isJwtIssuedPasswordTimeChanged(
+        iat as number,
+        passwordChangeTimestamp,
+      ))
+    ) {
+      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized!");
+    }
+
     if (requiredUserRole && !requiredUserRole.includes(role)) {
       throw new AppError(
-        httpStatus.UNAUTHORIZED,
+        httpStatus.FORBIDDEN,
         "You have no access to this route",
       );
     }

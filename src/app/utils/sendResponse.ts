@@ -4,6 +4,7 @@ export interface TSendResponseData<T> {
   statusCode: number;
   success: boolean;
   message: string;
+  token?: string;
   data: T;
 }
 
@@ -12,6 +13,7 @@ const sendResponse = <T>(res: Response, data: TSendResponseData<T>) => {
     statusCode: data.statusCode,
     success: data.success,
     message: data.message,
+    token: data.token,
     data: data.data,
   });
 };

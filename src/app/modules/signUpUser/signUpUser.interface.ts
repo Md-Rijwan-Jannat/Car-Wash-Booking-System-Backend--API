@@ -8,9 +8,10 @@ export interface ISignUPUser {
   phone: string;
   role: "admin" | "user";
   address: string;
+  passwordCreatedAt?: Date;
 }
 
-export type TUserRole = keyof typeof USER_ROLE;
+export type TUserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];
 
 // statics methods
 export interface ISignUpUserModel extends Model<ISignUPUser> {
@@ -18,5 +19,9 @@ export interface ISignUpUserModel extends Model<ISignUPUser> {
   isSignUpUserPasswordMatch(
     resendLoginPassword: string,
     hashPassword: string,
+  ): Promise<boolean>;
+  isJwtIssuedPasswordTimeChanged(
+    jwtIssuedTimestamp: number,
+    passwordChangeTimestamp: number,
   ): Promise<boolean>;
 }

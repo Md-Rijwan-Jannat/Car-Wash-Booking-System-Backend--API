@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { ISignUPUser, ISignUpUserModel } from "./signUpUser.interface";
 import bcrypt from "bcrypt";
 import config from "../../config";
+import { ISignUPUser, ISignUpUserModel } from "./signUpUser.interface";
 
 export const signUpUserSchema = new Schema<ISignUPUser, ISignUpUserModel>(
   {
@@ -20,7 +20,7 @@ export const signUpUserSchema = new Schema<ISignUPUser, ISignUpUserModel>(
       type: String,
       required: [true, "Password is required"],
       trim: true,
-      select: 0,
+      select: false,
     },
     phone: {
       type: String,
@@ -37,6 +37,10 @@ export const signUpUserSchema = new Schema<ISignUPUser, ISignUpUserModel>(
     address: {
       type: String,
       required: [true, "Address is required"],
+      trim: true,
+    },
+    passwordCreatedAt: {
+      type: Date,
       trim: true,
     },
   },
@@ -66,17 +70,25 @@ signUpUserSchema.post("save", async (doc, next) => {
   next();
 });
 
-// ---> check login request use is exist
+// ---> check login request user existence
 signUpUserSchema.statics.isSignUpUserExisting = async function (email: string) {
   return await SignUPUser.findOne({ email }).select("+password");
 };
 
-// ---> check the password is match
+// ---> check if password matches
 signUpUserSchema.statics.isSignUpUserPasswordMatch = async function (
   resendLoginPassword: string,
   hashPassword: string,
 ) {
   return await bcrypt.compare(resendLoginPassword, hashPassword);
+};
+
+// ---> check if JWT issued time is before password change time
+signUpUserSchema.statics.isJwtIssuedPasswordTimeChanged = async function (
+  jwtIssuedTimestamp: number,
+  passwordChangeTimestamp: number,
+) {
+  return passwordChangeTimestamp > jwtIssuedTimestamp;
 };
 
 export const SignUPUser = model<ISignUPUser, ISignUpUserModel>(

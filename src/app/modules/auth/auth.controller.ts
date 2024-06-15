@@ -4,10 +4,11 @@ import { SendResponse } from "../../utils/sendResponse";
 import { AuthLoginService } from "./auth.service";
 import config from "../../config";
 
+// ---> user login controller
 const authLogin = CatchAsync(async (req, res) => {
   const result = await AuthLoginService.authLogin(req.body);
 
-  const { accessToken, refreshToken } = result;
+  const { accessToken, refreshToken, user } = result;
 
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
@@ -18,12 +19,42 @@ const authLogin = CatchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "User logged in successfully",
-    data: {
-      accessToken,
-    },
+    token: accessToken,
+    data: user,
+  });
+});
+
+// ---> password change controller
+const passwordChange = CatchAsync(async (req, res) => {
+  const result = await AuthLoginService.passwordChangeIntoDB(
+    req.body,
+    req.user,
+  );
+
+  SendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Password changed successfully",
+    data: result,
+  });
+});
+
+// ---> refresh token controller
+const refreshToken = CatchAsync(async (req, res) => {
+  const { refreshToken } = req.cookies;
+  const token = refreshToken.replace("Bearer ", "");
+  const result = await AuthLoginService.refreshToken(token);
+
+  SendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Refresh token retrieved successfully",
+    data: result,
   });
 });
 
 export const AuthLoginController = {
   authLogin,
+  passwordChange,
+  refreshToken,
 };
