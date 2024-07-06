@@ -45,8 +45,8 @@ const authLogin = async (payload: IAuthLogin) => {
     config.jwt_refresh_token_expire_in as string,
   );
 
-  const accessToken = `Bearer ${createAccessToken}`;
-  const refreshToken = `Bearer ${createRefreshToken}`;
+  const accessToken = `${createAccessToken}`;
+  const refreshToken = `${createRefreshToken}`;
   return {
     accessToken,
     refreshToken,
