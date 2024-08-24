@@ -20,13 +20,14 @@ const createCarBookingSlot = CatchAsync(async (req, res) => {
 // ---> create car booking slot controller
 const getAllAvailableCarBookingSlot = CatchAsync(async (req, res) => {
   const result =
-    await CarBookingSlotService.getAllAvailableCarBookingSlotsFromDB();
+    await CarBookingSlotService.getAllAvailableCarBookingSlotsFromDB(req.query);
 
   SendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Available slots retrieved successfully",
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

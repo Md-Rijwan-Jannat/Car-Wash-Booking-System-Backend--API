@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import httpStatus from "http-status";
 import { AppError } from "../../error/AppError";
 import { CarService } from "../carService/carService.model";
 import { ICarBookingSlot } from "./carBookingSlot.interface";
 import { CarBookingSlot } from "./carBookingSlot.model";
 import { GenerateTimeSlots } from "./carBookingSlot.utils";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { CarBookingSlotsSearchableFields } from "./carBookingSlots.constants";
 
 const createCrBookingSlotIntoDB = async (payload: ICarBookingSlot) => {
   const isCarServiceExisting = await CarService.findById(payload.service);
@@ -34,15 +37,32 @@ const createCrBookingSlotIntoDB = async (payload: ICarBookingSlot) => {
   }
 };
 
-const getAllAvailableCarBookingSlotsFromDB = async () => {
-  const result = await CarBookingSlot.find({ isBooked: "available" }).populate(
-    "service",
-  );
+const getAllAvailableCarBookingSlotsFromDB = async (
+  query: Record<string, unknown>,
+) => {
+  const carBookingSlotQueryBuilder = new QueryBuilder(
+    CarBookingSlot.find({ isBooked: "available" }),
+    query,
+  )
+    .search(CarBookingSlotsSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result =
+    await carBookingSlotQueryBuilder.modelQuery.populate("service");
 
   if (result.length === 0) {
     throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");
   }
-  return result;
+
+  const meta = await carBookingSlotQueryBuilder.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 export const CarBookingSlotService = {

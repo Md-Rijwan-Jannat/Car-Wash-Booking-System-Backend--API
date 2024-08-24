@@ -7,6 +7,8 @@ import { CarServiceBooking } from "./carServiceBooking.model";
 import { CarBookingSlot } from "../carBookingSlot/carBookingSlot.model";
 import { SignUPUser } from "../signUpUser/signUpUser.model";
 import { JwtPayload } from "jsonwebtoken";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { CarServiceBookingSearchableFields } from "./carServiceBooking.constants";
 
 // Create car booking service with transaction
 const createCarServiceBookingIntoDB = async (
@@ -94,35 +96,67 @@ const createCarServiceBookingIntoDB = async (
 };
 
 // ---> get all car service booking data
-const getAllCarServiceBookingFromDB = async () => {
-  const result = await CarServiceBooking.find()
-    .populate("customer")
-    .populate("service")
-    .populate("slot");
+const getAllCarServiceBookingFromDB = async (
+  query: Record<string, unknown>,
+) => {
+  const carServiceBookingQueryBuilder = new QueryBuilder(
+    CarServiceBooking.find()
+      .populate("customer")
+      .populate("service")
+      .populate("slot"),
+    query,
+  )
+    .search(CarServiceBookingSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await carServiceBookingQueryBuilder.modelQuery;
+  const meta = await carServiceBookingQueryBuilder.countTotal();
 
   if (result.length === 0) {
     throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");
   }
 
-  return result;
+  return {
+    meta,
+    result,
+  };
 };
 
 // ---> get all my car service booking data
-const getAllMyCarServiceBookingFromDB = async (payload: JwtPayload) => {
+const getAllMyCarServiceBookingFromDB = async (
+  query: Record<string, unknown>,
+  payload: JwtPayload,
+) => {
   const isUserExisting = await SignUPUser.findOne({ email: payload.email });
 
-  const result = await CarServiceBooking.find({ customer: isUserExisting?._id })
-    .select("-customer")
-    .populate("service")
-    .populate("slot");
+  const myCarServiceBookingQueryBuilder = new QueryBuilder(
+    CarServiceBooking.find({ customer: isUserExisting?._id })
+      .select("-customer")
+      .populate("service")
+      .populate("slot"),
+    query,
+  )
+    .search(CarServiceBookingSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await myCarServiceBookingQueryBuilder.modelQuery;
+  const meta = await myCarServiceBookingQueryBuilder.countTotal();
 
   if (result.length === 0) {
     throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");
   }
 
-  return result;
+  return {
+    meta,
+    result,
+  };
 };
-
 export const CarServiceBookingService = {
   createCarServiceBookingIntoDB,
   getAllCarServiceBookingFromDB,

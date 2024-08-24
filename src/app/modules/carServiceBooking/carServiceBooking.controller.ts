@@ -22,13 +22,16 @@ const createCarServiceBooking = CatchAsync(async (req, res) => {
 
 // ---> get all car service booking controller
 const getAllCarServiceBooking = CatchAsync(async (req, res) => {
-  const result = await CarServiceBookingService.getAllCarServiceBookingFromDB();
+  const result = await CarServiceBookingService.getAllCarServiceBookingFromDB(
+    req.query,
+  );
 
   SendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "All bookings retrieved successfully",
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 
@@ -36,13 +39,15 @@ const getAllCarServiceBooking = CatchAsync(async (req, res) => {
 const getAllMyCarServiceBooking = CatchAsync(async (req, res) => {
   const result = await CarServiceBookingService.getAllMyCarServiceBookingFromDB(
     req.user,
+    req.query,
   );
 
   SendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "User bookings retrieved successfully",
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

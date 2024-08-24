@@ -1,7 +1,5 @@
 import { Schema, model } from "mongoose";
 import { ICarService, ICarServiceModel } from "./carService.interface";
-import { AppError } from "../../error/AppError";
-import httpStatus from "http-status";
 
 export const carServiceSchema = new Schema<ICarService, ICarServiceModel>(
   {

@@ -30,13 +30,14 @@ const getSingleCarService = CatchAsync(async (req, res) => {
 
 // ---> get all car service controller
 const getAllCarService = CatchAsync(async (req, res) => {
-  const result = await CarServiceServices.getAllCarServiceFromDB();
+  const result = await CarServiceServices.getAllCarServiceFromDB(req.query);
 
   SendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Services retrieved successfully",
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 

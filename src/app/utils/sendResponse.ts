@@ -1,11 +1,19 @@
 import { Response } from "express";
 
+interface IMeta {
+  limit: number;
+  page: number;
+  total: number;
+  totalPage: number;
+}
+
 export interface TSendResponseData<T> {
   statusCode: number;
   success: boolean;
   message: string;
   token?: string;
   data: T;
+  meta?: IMeta;
 }
 
 const sendResponse = <T>(res: Response, data: TSendResponseData<T>) => {

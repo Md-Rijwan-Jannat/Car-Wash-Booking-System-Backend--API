@@ -10,3 +10,11 @@ export const vehicleTypeArray = [
   "bicycle",
   "tractor",
 ];
+
+export const CarServiceBookingSearchableFields = [
+  "vehicleType",
+  "vehicleModel",
+  "vehicleBrand",
+  "registrationPlate",
+  "manufacturingYear",
+];

@@ -2,6 +2,8 @@ import httpStatus from "http-status";
 import { AppError } from "../../error/AppError";
 import { ICarService } from "./carService.interface";
 import { CarService } from "./carService.model";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { CarServiceSearchableFields } from "./carService.constants";
 
 // ---> create car service service
 const createCarServiceIntoDB = async (payload: ICarService) => {
@@ -28,14 +30,26 @@ const getSingleCarServiceFromDB = async (id: string) => {
 };
 
 // ---> get all car services service
-const getAllCarServiceFromDB = async () => {
-  const result = await CarService.find();
+const getAllCarServiceFromDB = async (query: Record<string, unknown>) => {
+  const carServiceQueryBuilder = new QueryBuilder(CarService.find(), query)
+    .search(CarServiceSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await carServiceQueryBuilder.modelQuery;
 
   if (result.length === 0) {
     throw new AppError(httpStatus.NOT_FOUND, "Data Not Found");
   }
 
-  return result;
+  const meta = await carServiceQueryBuilder.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 // ---> update single car service service

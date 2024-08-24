@@ -7,6 +7,7 @@ import {
   MyCarServiceBookingRoutes,
 } from "../modules/carServiceBooking/carServiceBooking.routes";
 import { AuthLoginRoutes } from "../modules/auth/auth.routes";
+import { websiteReviewRoutes } from "../modules/websiteReview/websiteReview.routes";
 
 const router = Router();
 
@@ -30,6 +31,14 @@ const appRoutesModel = [
   {
     path: "/my-bookings",
     routeFile: MyCarServiceBookingRoutes,
+  },
+  {
+    path: "/my-bookings",
+    routeFile: MyCarServiceBookingRoutes,
+  },
+  {
+    path: "/website-reviews",
+    routeFile: websiteReviewRoutes,
   },
   {
     path: "/auth",

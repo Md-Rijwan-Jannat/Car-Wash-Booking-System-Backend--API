@@ -15,12 +15,14 @@ export default tseslint.config(
   {
     rules: {
       "no-unused-vars": "error",
-      "no-undef": "error",
+      "no-unused-expressions": "error",
       "prefer-const": "error",
+      "no-undef": "error",
       "no-console": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
     },
   },
   {
     ignores: ["**/node_modules/", "**/dist/"],
-  }
+  },
 );
