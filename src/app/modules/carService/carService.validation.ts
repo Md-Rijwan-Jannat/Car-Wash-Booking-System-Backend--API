@@ -6,6 +6,12 @@ const createCarServiceValidationSchema = z.object({
       required_error: "Service name is required",
       invalid_type_error: "Service name must be string",
     }),
+    image: z
+      .string({
+        required_error: "Service name is required",
+        invalid_type_error: "Service name must be string",
+      })
+      .optional(),
     description: z.string({
       required_error: "Description is required",
       invalid_type_error: "Description must be string",

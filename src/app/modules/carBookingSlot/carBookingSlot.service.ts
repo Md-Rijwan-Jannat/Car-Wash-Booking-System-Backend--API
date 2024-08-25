@@ -2,7 +2,7 @@
 import httpStatus from "http-status";
 import { AppError } from "../../error/AppError";
 import { CarService } from "../carService/carService.model";
-import { ICarBookingSlot } from "./carBookingSlot.interface";
+import { IBookingStatus, ICarBookingSlot } from "./carBookingSlot.interface";
 import { CarBookingSlot } from "./carBookingSlot.model";
 import { GenerateTimeSlots } from "./carBookingSlot.utils";
 import QueryBuilder from "../../builder/QueryBuilder";
@@ -65,7 +65,41 @@ const getAllAvailableCarBookingSlotsFromDB = async (
   };
 };
 
+const updateCarBookingStatusFromDB = async (
+  payload: { isBooked: IBookingStatus },
+  slotId: string,
+) => {
+  const carBookingSlot = await CarBookingSlot.findById(slotId);
+
+  if (!carBookingSlot) {
+    throw new AppError(httpStatus.NOT_FOUND, "Slot not found");
+  }
+
+  const { isBooked, _id } = carBookingSlot;
+
+  if (isBooked === "booked" && payload.isBooked === "booked") {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Slot is already booked and cannot be re-booked",
+    );
+  }
+
+  if (isBooked === "canceled" && payload.isBooked === "canceled") {
+    throw new AppError(httpStatus.BAD_REQUEST, "Slot is already canceled");
+  }
+  if (isBooked === "available" && payload.isBooked === "booked") {
+    throw new AppError(httpStatus.BAD_REQUEST, "You cannot book a slot");
+  }
+
+  const result = await CarBookingSlot.findByIdAndUpdate(_id, payload, {
+    new: true,
+  });
+
+  return result;
+};
+
 export const CarBookingSlotService = {
   createCrBookingSlotIntoDB,
   getAllAvailableCarBookingSlotsFromDB,
+  updateCarBookingStatusFromDB,
 };

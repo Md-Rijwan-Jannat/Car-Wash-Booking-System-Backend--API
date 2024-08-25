@@ -31,7 +31,24 @@ const getAllAvailableCarBookingSlot = CatchAsync(async (req, res) => {
   });
 });
 
+// ---> update car booking slot controller
+const updateCarBookingStatus = CatchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await CarBookingSlotService.updateCarBookingStatusFromDB(
+    req.body,
+    id,
+  );
+
+  SendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Update car booking slots successfully",
+    data: result,
+  });
+});
+
 export const CarBookingSlotController = {
   createCarBookingSlot,
   getAllAvailableCarBookingSlot,
+  updateCarBookingStatus,
 };

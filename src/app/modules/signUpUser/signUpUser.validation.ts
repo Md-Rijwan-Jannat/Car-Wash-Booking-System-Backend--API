@@ -26,6 +26,12 @@ const createSignUpValidationSchema = z.object({
       required_error: "Phone is required",
       invalid_type_error: "Phone is must be a string",
     }),
+    profileImg: z
+      .string({
+        required_error: "Role is required",
+        invalid_type_error: "Role is must be a string",
+      })
+      .optional(),
     role: z.string({
       required_error: "Role is required",
       invalid_type_error: "Role is must be a string",

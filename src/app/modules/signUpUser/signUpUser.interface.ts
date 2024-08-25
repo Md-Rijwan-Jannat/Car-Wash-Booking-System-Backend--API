@@ -3,10 +3,12 @@ import { Model } from "mongoose";
 import { USER_ROLE } from "./signUpUser.constants";
 
 export interface ISignUPUser {
+  _id?: string;
   name: string;
   email: string;
   password: string;
   phone: string;
+  profileImg?: string;
   role: "admin" | "user";
   address: string;
   passwordCreatedAt?: Date;

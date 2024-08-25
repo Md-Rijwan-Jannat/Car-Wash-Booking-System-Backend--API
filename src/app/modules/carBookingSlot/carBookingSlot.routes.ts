@@ -21,4 +21,13 @@ router.get(
   CarBookingSlotController.getAllAvailableCarBookingSlot,
 );
 
+router.patch(
+  "/:id",
+  Auth(USER_ROLE.admin),
+  ValidationRequest(
+    CarBookingSlotValidation.updateBookingStatusValidationSchema,
+  ),
+  CarBookingSlotController.updateCarBookingStatus,
+);
+
 export const CarBookingSlotRoutes = router;

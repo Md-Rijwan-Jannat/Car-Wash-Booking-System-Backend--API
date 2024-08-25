@@ -3,6 +3,7 @@ import { Model } from "mongoose";
 
 export interface ICarService {
   name: string;
+  image?: string;
   description: string;
   price: number;
   duration: number;

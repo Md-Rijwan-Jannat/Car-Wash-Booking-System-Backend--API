@@ -47,6 +47,13 @@ const createCarBookingSlotValidationSchema = z.object({
     ),
 });
 
+const updateBookingStatusValidationSchema = z.object({
+  body: z.object({
+    isBooked: z.string({ required_error: "Booking status is required" }),
+  }),
+});
+
 export const CarBookingSlotValidation = {
   createCarBookingSlotValidationSchema,
+  updateBookingStatusValidationSchema,
 };

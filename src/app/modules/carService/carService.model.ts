@@ -8,6 +8,11 @@ export const carServiceSchema = new Schema<ICarService, ICarServiceModel>(
       required: [true, "Service name is required"],
       trim: true,
     },
+    image: {
+      type: String,
+      default: "https://i.ibb.co/qRyMqt6/default.png",
+      trim: true,
+    },
     description: {
       type: String,
       required: [true, "Description name is required"],

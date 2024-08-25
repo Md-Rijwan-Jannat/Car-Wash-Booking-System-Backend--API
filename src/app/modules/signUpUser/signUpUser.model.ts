@@ -29,6 +29,12 @@ export const signUpUserSchema = new Schema<ISignUPUser, ISignUpUserModel>(
       trim: true,
       unique: true,
     },
+    profileImg: {
+      type: String,
+      default:
+        "https://i.ibb.co/T4t96zZ/blank-profile-picture-973460-960-720.webp",
+      trim: true,
+    },
     role: {
       type: String,
       required: [true, "Role is required"],
