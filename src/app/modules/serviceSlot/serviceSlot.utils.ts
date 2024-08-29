@@ -1,11 +1,8 @@
-import { ICarBookingSlot } from "./carBookingSlot.interface";
-import { CarBookingSlot } from "./carBookingSlot.model";
+import { ICarService } from "./serviceSlot.interface";
+import { ServiceSlot } from "./serviceSlot.model";
 
 // carBookingSlot.utils.ts
-const generateTimeSlots = async (
-  payload: ICarBookingSlot,
-  duration: number,
-) => {
+const generateTimeSlots = async (payload: ICarService, duration: number) => {
   const slots = [];
 
   const [startTimeHours, startTimeMinutes] = payload.startTime
@@ -34,7 +31,7 @@ const generateTimeSlots = async (
     const endTime = `${endHour}:${endMinute}`;
 
     // Check if a slot with the same service, date, and time exists
-    const existingSlot = await CarBookingSlot.findOne({
+    const existingSlot = await ServiceSlot.findOne({
       service: payload.service,
       date: payload.date,
       startTime: startTime,

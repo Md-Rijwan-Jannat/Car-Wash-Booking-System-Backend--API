@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { vehicleTypeArray } from "./carServiceBooking.constants";
+import { vehicleTypeArray } from "./serviceSlotBooking.constants";
 
-const createCarServiceBookingValidationSchema = z.object({
+const createServiceSlotBookingValidationSchema = z.object({
   body: z.object({
     customer: z
       .string({ invalid_type_error: "Customer ID must be a string" })
@@ -22,6 +22,19 @@ const createCarServiceBookingValidationSchema = z.object({
       required_error: "Vehicle Type is required",
       invalid_type_error: "Invalid Vehicle Type",
     }),
+    transitionId: z
+      .string({
+        required_error: "Transition ID is required",
+        invalid_type_error: "Transition ID must be a string",
+      })
+      .trim(),
+    paymentStatus: z.enum(
+      [...(["pending", "success"] as [string, ...string[]])],
+      {
+        required_error: "Vehicle Type is required",
+        invalid_type_error: "Invalid Vehicle Type",
+      },
+    ),
     vehicleBrand: z
       .string({
         required_error: "Vehicle brand is required",
@@ -47,11 +60,11 @@ const createCarServiceBookingValidationSchema = z.object({
   }),
 });
 
-const updateCarServiceBookingValidationSchema = z.object({
-  body: createCarServiceBookingValidationSchema.partial(),
+const updateServiceSlotBookingValidationSchema = z.object({
+  body: createServiceSlotBookingValidationSchema.partial(),
 });
 
-export const CarBookingValidation = {
-  createCarServiceBookingValidationSchema,
-  updateCarServiceBookingValidationSchema,
+export const ServiceSlotBookingValidation = {
+  createServiceSlotBookingValidationSchema,
+  updateServiceSlotBookingValidationSchema,
 };

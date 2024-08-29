@@ -13,6 +13,12 @@ router.post(
   SignUpUserController.signUpUserAccount,
 );
 
+router.get(
+  "/:email",
+  Auth(USER_ROLE.admin, USER_ROLE.user),
+  SignUpUserController.getUser,
+);
+
 router.patch(
   "/:id",
   Auth(USER_ROLE.admin, USER_ROLE.user),

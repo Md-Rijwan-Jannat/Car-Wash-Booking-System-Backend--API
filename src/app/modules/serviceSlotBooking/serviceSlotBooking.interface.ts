@@ -10,12 +10,15 @@ export type TVehicleType =
   | "electricVehicle"
   | "hybridVehicle"
   | "bicycle"
-  | "tractor";
+  | "tractor"
+  | "other";
 
-export interface ICarServiceBooking {
+export interface IServiceSlotBooking {
   customer?: Types.ObjectId;
   service: Types.ObjectId;
   slot: Types.ObjectId;
+  transitionId: string;
+  paymentStatus: "pending" | "success";
   vehicleType: TVehicleType;
   vehicleBrand: string;
   vehicleModel: string;
@@ -23,8 +26,8 @@ export interface ICarServiceBooking {
   registrationPlate: string;
 }
 
-export interface ICarServiceBookingPayload
-  extends Omit<ICarServiceBooking, "service" | "slot"> {
+export interface IServiceSlotBookingPayload
+  extends Omit<IServiceSlotBooking, "service" | "slot"> {
   serviceId: string;
   slotId: string;
 }

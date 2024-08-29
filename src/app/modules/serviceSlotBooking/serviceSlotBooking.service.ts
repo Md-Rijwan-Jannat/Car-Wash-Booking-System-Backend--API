@@ -2,17 +2,18 @@ import httpStatus from "http-status";
 import mongoose from "mongoose";
 import { AppError } from "../../error/AppError";
 import { CarService } from "../carService/carService.model";
-import { ICarServiceBookingPayload } from "./carServiceBooking.interface";
-import { CarServiceBooking } from "./carServiceBooking.model";
-import { CarBookingSlot } from "../carBookingSlot/carBookingSlot.model";
+import { ServiceSlot } from "../serviceSlot/serviceSlot.model";
 import { SignUPUser } from "../signUpUser/signUpUser.model";
 import { JwtPayload } from "jsonwebtoken";
 import QueryBuilder from "../../builder/QueryBuilder";
-import { CarServiceBookingSearchableFields } from "./carServiceBooking.constants";
+import { initialPayment } from "../paymanet/payment.utils";
+import { ServiceSlotBooking } from "./serviceSlotBooking.model";
+import { IServiceSlotBookingPayload } from "./serviceSlotBooking.interface";
+import { ServiceSlotBookingSearchableFields } from "./serviceSlotBooking.constants";
 
 // Create car booking service with transaction
 const createCarServiceBookingIntoDB = async (
-  payload: ICarServiceBookingPayload,
+  payload: IServiceSlotBookingPayload,
   email: string,
 ) => {
   const session = await mongoose.startSession();
@@ -34,7 +35,7 @@ const createCarServiceBookingIntoDB = async (
     }
 
     // Find the car booking slot by ID
-    const isCarBookingSlotExisting = await CarBookingSlot.findById(
+    const isCarBookingSlotExisting = await ServiceSlot.findById(
       payload.slotId,
     ).session(session);
     if (!isCarBookingSlotExisting) {
@@ -44,7 +45,7 @@ const createCarServiceBookingIntoDB = async (
     // Check if the slot is available
     if (isCarBookingSlotExisting.isBooked === "available") {
       // Update the slot to booked
-      await CarBookingSlot.findByIdAndUpdate(
+      await ServiceSlot.findByIdAndUpdate(
         payload.slotId,
         { isBooked: "booked" },
         { new: true, runValidators: true, session },
@@ -57,7 +58,7 @@ const createCarServiceBookingIntoDB = async (
     }
 
     // Create the car service booking
-    const result = await CarServiceBooking.create(
+    const result = await ServiceSlotBooking.create(
       [
         {
           customer: customer._id,
@@ -76,11 +77,14 @@ const createCarServiceBookingIntoDB = async (
     );
 
     // Populate the result with related data
-    const populateResult = await CarServiceBooking.findById(result[0]._id)
+    const populateResult = await ServiceSlotBooking.findById(result[0]._id)
       .populate("customer")
       .populate("service")
       .populate("slot")
       .session(session);
+
+    // payment calling
+    initialPayment();
 
     // Commit the transaction
     await session.commitTransaction();
@@ -100,13 +104,13 @@ const getAllCarServiceBookingFromDB = async (
   query: Record<string, unknown>,
 ) => {
   const carServiceBookingQueryBuilder = new QueryBuilder(
-    CarServiceBooking.find()
+    ServiceSlotBooking.find()
       .populate("customer")
       .populate("service")
       .populate("slot"),
     query,
   )
-    .search(CarServiceBookingSearchableFields)
+    .search(ServiceSlotBookingSearchableFields)
     .filter()
     .sort()
     .paginate()
@@ -133,13 +137,13 @@ const getAllMyCarServiceBookingFromDB = async (
   const isUserExisting = await SignUPUser.findOne({ email: payload.email });
 
   const myCarServiceBookingQueryBuilder = new QueryBuilder(
-    CarServiceBooking.find({ customer: isUserExisting?._id })
+    ServiceSlotBooking.find({ customer: isUserExisting?._id })
       .select("-customer")
       .populate("service")
       .populate("slot"),
     query,
   )
-    .search(CarServiceBookingSearchableFields)
+    .search(ServiceSlotBookingSearchableFields)
     .filter()
     .sort()
     .paginate()
@@ -158,7 +162,7 @@ const getAllMyCarServiceBookingFromDB = async (
   };
 };
 export const CarServiceBookingService = {
-  createCarServiceBookingIntoDB,
-  getAllCarServiceBookingFromDB,
-  getAllMyCarServiceBookingFromDB,
+  createServiceSlotBookingIntoDB: createCarServiceBookingIntoDB,
+  getAllServiceSlotBookingFromDB: getAllCarServiceBookingFromDB,
+  getAllMyServiceSlotBookingFromDB: getAllMyCarServiceBookingFromDB,
 };

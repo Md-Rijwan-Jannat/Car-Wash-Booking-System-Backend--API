@@ -2,13 +2,13 @@
 import httpStatus from "http-status";
 import { AppError } from "../../error/AppError";
 import { CarService } from "../carService/carService.model";
-import { IBookingStatus, ICarBookingSlot } from "./carBookingSlot.interface";
-import { CarBookingSlot } from "./carBookingSlot.model";
-import { GenerateTimeSlots } from "./carBookingSlot.utils";
+import { IServiceSlot, ICarService } from "./serviceSlot.interface";
+import { ServiceSlot } from "./serviceSlot.model";
+import { GenerateTimeSlots } from "./serviceSlot.utils";
 import QueryBuilder from "../../builder/QueryBuilder";
-import { CarBookingSlotsSearchableFields } from "./carBookingSlots.constants";
+import { ServiceSlotsSearchableFields } from "./serviceSlot.constants";
 
-const createCrBookingSlotIntoDB = async (payload: ICarBookingSlot) => {
+const createServiceSlotIntoDB = async (payload: ICarService) => {
   const isCarServiceExisting = await CarService.findById(payload.service);
 
   // ---> check if the service exists
@@ -28,7 +28,7 @@ const createCrBookingSlotIntoDB = async (payload: ICarBookingSlot) => {
     }
 
     // ---> Save all slots to the database
-    const result = await CarBookingSlot.insertMany(slots);
+    const result = await ServiceSlot.insertMany(slots);
 
     return result;
   } catch (error: any) {
@@ -37,14 +37,14 @@ const createCrBookingSlotIntoDB = async (payload: ICarBookingSlot) => {
   }
 };
 
-const getAllAvailableCarBookingSlotsFromDB = async (
+const getAllAvailableServiceSlotsFromDB = async (
   query: Record<string, unknown>,
 ) => {
   const carBookingSlotQueryBuilder = new QueryBuilder(
-    CarBookingSlot.find({ isBooked: "available" }),
+    ServiceSlot.find({ isBooked: "available" }),
     query,
   )
-    .search(CarBookingSlotsSearchableFields)
+    .search(ServiceSlotsSearchableFields)
     .filter()
     .sort()
     .paginate()
@@ -65,11 +65,26 @@ const getAllAvailableCarBookingSlotsFromDB = async (
   };
 };
 
-const updateCarBookingStatusFromDB = async (
-  payload: { isBooked: IBookingStatus },
+const getAllServiceSlotsFromDB = async (serviceId: string) => {
+  const result = await ServiceSlot.find({ service: serviceId }).populate(
+    "service",
+  );
+
+  if (result.length === 0 || !result) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "For this service slots are not available",
+    );
+  }
+
+  return result;
+};
+
+const updateServiceSlotStatusFromDB = async (
+  payload: { isBooked: IServiceSlot },
   slotId: string,
 ) => {
-  const carBookingSlot = await CarBookingSlot.findById(slotId);
+  const carBookingSlot = await ServiceSlot.findById(slotId);
 
   if (!carBookingSlot) {
     throw new AppError(httpStatus.NOT_FOUND, "Slot not found");
@@ -91,7 +106,7 @@ const updateCarBookingStatusFromDB = async (
     throw new AppError(httpStatus.BAD_REQUEST, "You cannot book a slot");
   }
 
-  const result = await CarBookingSlot.findByIdAndUpdate(_id, payload, {
+  const result = await ServiceSlot.findByIdAndUpdate(_id, payload, {
     new: true,
   });
 
@@ -99,7 +114,8 @@ const updateCarBookingStatusFromDB = async (
 };
 
 export const CarBookingSlotService = {
-  createCrBookingSlotIntoDB,
-  getAllAvailableCarBookingSlotsFromDB,
-  updateCarBookingStatusFromDB,
+  createServiceSlotIntoDB,
+  getAllAvailableServiceSlotsFromDB,
+  getAllServiceSlotsFromDB,
+  updateServiceSlotStatusFromDB,
 };

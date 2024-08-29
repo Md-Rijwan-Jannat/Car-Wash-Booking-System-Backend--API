@@ -9,9 +9,10 @@ export const vehicleTypeArray = [
   "hybridVehicle",
   "bicycle",
   "tractor",
+  "other",
 ];
 
-export const CarServiceBookingSearchableFields = [
+export const ServiceSlotBookingSearchableFields = [
   "vehicleType",
   "vehicleModel",
   "vehicleBrand",

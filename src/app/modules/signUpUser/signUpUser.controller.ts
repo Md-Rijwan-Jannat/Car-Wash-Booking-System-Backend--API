@@ -15,6 +15,20 @@ const signUpUserAccount = CatchAsync(async (req, res) => {
   });
 });
 
+// ---> getUser  controller
+const getUser = CatchAsync(async (req, res) => {
+  const { email } = req.user;
+  const { email: userEmail } = req.params;
+  const result = await SignUpServices.getUserFromDB(userEmail, email);
+
+  SendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Get user successfully!",
+    data: result,
+  });
+});
+
 // ---> Update user details controller
 const updateUserAccount = CatchAsync(async (req, res) => {
   const { id: userId } = req.params;
@@ -33,5 +47,6 @@ const updateUserAccount = CatchAsync(async (req, res) => {
 
 export const SignUpUserController = {
   signUpUserAccount,
+  getUser,
   updateUserAccount,
 };

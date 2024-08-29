@@ -8,9 +8,23 @@ const signUpUserAccountIntoDB = async (payload: ISignUPUser) => {
   const user = await SignUPUser.isSignUpUserExisting(payload.email);
 
   if (user) {
-    throw new Error("This user already exists");
+    throw new AppError(httpStatus.CONFLICT, "This user already exists");
   }
   const result = await SignUPUser.create(payload);
+  return result;
+};
+
+// ---> get user service
+const getUserFromDB = async (userEmail: string, email: string) => {
+  const result = await SignUPUser.findOne({ email: userEmail });
+
+  if (email !== result?.email) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "You are unauthorized");
+  }
+
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
   return result;
 };
 
@@ -31,5 +45,6 @@ const updateUserAccountIntoDB = async (
 
 export const SignUpServices = {
   signUpUserAccountIntoDB,
+  getUserFromDB,
   updateUserAccountIntoDB,
 };

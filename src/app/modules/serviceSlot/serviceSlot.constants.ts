@@ -1,4 +1,4 @@
-export const CarBookingSlotsSearchableFields = [
+export const ServiceSlotsSearchableFields = [
   "date",
   "service.name",
   "startTime",

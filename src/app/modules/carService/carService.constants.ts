@@ -1,6 +1,1 @@
-export const CarServiceSearchableFields = [
-  "name",
-  "description",
-  "price",
-  "duration",
-];
+export const CarServiceSearchableFields = ["name", "description"];

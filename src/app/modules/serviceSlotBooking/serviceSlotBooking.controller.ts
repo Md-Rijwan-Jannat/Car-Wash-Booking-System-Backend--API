@@ -1,13 +1,13 @@
 import httpStatus from "http-status";
 import { CatchAsync } from "../../utils/catchAsync";
 import { SendResponse } from "../../utils/sendResponse";
-import { CarServiceBookingService } from "./carServiceBooking.service";
+import { CarServiceBookingService as ServiceSlotBookingService } from "./serviceSlotBooking.service";
 
 // ---> car service booking controller
-const createCarServiceBooking = CatchAsync(async (req, res) => {
+const createServiceSlotBooking = CatchAsync(async (req, res) => {
   const { email } = req.user;
 
-  const result = await CarServiceBookingService.createCarServiceBookingIntoDB(
+  const result = await ServiceSlotBookingService.createServiceSlotBookingIntoDB(
     req.body,
     email,
   );
@@ -21,8 +21,8 @@ const createCarServiceBooking = CatchAsync(async (req, res) => {
 });
 
 // ---> get all car service booking controller
-const getAllCarServiceBooking = CatchAsync(async (req, res) => {
-  const result = await CarServiceBookingService.getAllCarServiceBookingFromDB(
+const getAllServiceSlotBooking = CatchAsync(async (req, res) => {
+  const result = await ServiceSlotBookingService.getAllServiceSlotBookingFromDB(
     req.query,
   );
 
@@ -30,29 +30,28 @@ const getAllCarServiceBooking = CatchAsync(async (req, res) => {
     statusCode: httpStatus.OK,
     success: true,
     message: "All bookings retrieved successfully",
-    meta: result.meta,
-    data: result.result,
+    data: result,
   });
 });
 
 // ---> get all my car service booking controller
-const getAllMyCarServiceBooking = CatchAsync(async (req, res) => {
-  const result = await CarServiceBookingService.getAllMyCarServiceBookingFromDB(
-    req.user,
-    req.query,
-  );
+const getAllMyServiceSlotBooking = CatchAsync(async (req, res) => {
+  const result =
+    await ServiceSlotBookingService.getAllMyServiceSlotBookingFromDB(
+      req.user,
+      req.query,
+    );
 
   SendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "User bookings retrieved successfully",
-    meta: result.meta,
-    data: result.result,
+    data: result,
   });
 });
 
-export const CarServiceBookingController = {
-  createCarServiceBooking,
-  getAllCarServiceBooking,
-  getAllMyCarServiceBooking,
+export const ServiceSlotBookingController = {
+  createServiceSlotBooking,
+  getAllServiceSlotBooking,
+  getAllMyServiceSlotBooking,
 };

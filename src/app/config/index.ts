@@ -11,4 +11,7 @@ export default {
   jwt_refresh_token: process.env.JWT_REFRESH_TOKEN,
   jwt_access_token_expire_in: process.env.JWT_ACCESS_TOKEN_EXPIRE_IN,
   jwt_refresh_token_expire_in: process.env.JWT_REFRESH_TOKEN_EXPIRE_IN,
+  store_id: process.env.STORE_ID,
+  signature_key: process.env.SIGNATURE_KEY,
+  aamarpay_url: process.env.AAMARPAY_URL,
 };

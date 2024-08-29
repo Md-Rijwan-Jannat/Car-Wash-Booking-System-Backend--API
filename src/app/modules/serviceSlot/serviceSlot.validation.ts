@@ -20,7 +20,7 @@ const endTimeSchema = z
     return timeRegex.test(time);
   });
 
-const createCarBookingSlotValidationSchema = z.object({
+const createServiceSlotsValidationSchema = z.object({
   body: z
     .object({
       service: z.string({
@@ -47,13 +47,13 @@ const createCarBookingSlotValidationSchema = z.object({
     ),
 });
 
-const updateBookingStatusValidationSchema = z.object({
+const updateServiceSlotValidationSchema = z.object({
   body: z.object({
     isBooked: z.string({ required_error: "Booking status is required" }),
   }),
 });
 
 export const CarBookingSlotValidation = {
-  createCarBookingSlotValidationSchema,
-  updateBookingStatusValidationSchema,
+  createServiceSlotsValidationSchema,
+  updateServiceSlotValidationSchema,
 };

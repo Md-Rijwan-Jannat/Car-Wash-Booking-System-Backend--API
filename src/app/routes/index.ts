@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { CarServiceRoutes } from "../modules/carService/carService.routes";
 import { SignUpUserRoutes } from "../modules/signUpUser/signUpUser.routes";
-import { CarBookingSlotRoutes } from "../modules/carBookingSlot/carBookingSlot.routes";
+import { ServiceSlotRoutes } from "../modules/serviceSlot/serviceSlot.routes";
+import { AuthLoginRoutes } from "../modules/auth/auth.routes";
+import { websiteReviewRoutes } from "../modules/websiteReview/websiteReview.routes";
 import {
   CarServiceBookingRoutes,
   MyCarServiceBookingRoutes,
-} from "../modules/carServiceBooking/carServiceBooking.routes";
-import { AuthLoginRoutes } from "../modules/auth/auth.routes";
-import { websiteReviewRoutes } from "../modules/websiteReview/websiteReview.routes";
+} from "../modules/carServiceBooking/serviceSlotBooking.routes";
 
 const router = Router();
 
@@ -22,15 +22,11 @@ const appRoutesModel = [
   },
   {
     path: "/slots",
-    routeFile: CarBookingSlotRoutes,
+    routeFile: ServiceSlotRoutes,
   },
   {
     path: "/bookings",
     routeFile: CarServiceBookingRoutes,
-  },
-  {
-    path: "/my-bookings",
-    routeFile: MyCarServiceBookingRoutes,
   },
   {
     path: "/my-bookings",

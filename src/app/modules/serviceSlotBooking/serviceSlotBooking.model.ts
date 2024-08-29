@@ -1,8 +1,8 @@
 import { Schema, model } from "mongoose";
-import { ICarServiceBooking } from "./carServiceBooking.interface";
-import { vehicleTypeArray } from "./carServiceBooking.constants";
+import { IServiceSlotBooking } from "./serviceSlotBooking.interface";
+import { vehicleTypeArray } from "./serviceSlotBooking.constants";
 
-const carServiceBookingSchema = new Schema<ICarServiceBooking>(
+const serviceSlotBookingSchema = new Schema<IServiceSlotBooking>(
   {
     customer: {
       type: Schema.Types.ObjectId,
@@ -24,6 +24,20 @@ const carServiceBookingSchema = new Schema<ICarServiceBooking>(
       enum: {
         values: vehicleTypeArray,
         message: "Vehicle type must be one of: {VALUE}",
+      },
+      trim: true,
+    },
+    transitionId: {
+      type: String,
+      required: [true, "Transition Id is required"],
+      trim: true,
+    },
+    paymentStatus: {
+      type: String,
+      required: [true, "Vehicle type is required"],
+      enum: {
+        values: ["pending", "success"],
+        message: "Payment status type must be one of: {VALUE}",
       },
       trim: true,
     },
@@ -51,7 +65,7 @@ const carServiceBookingSchema = new Schema<ICarServiceBooking>(
   { timestamps: true },
 );
 
-export const CarServiceBooking = model<ICarServiceBooking>(
-  "CarServiceBooking",
-  carServiceBookingSchema,
+export const ServiceSlotBooking = model<IServiceSlotBooking>(
+  "ServiceSlotBooking",
+  serviceSlotBookingSchema,
 );
