@@ -10,6 +10,7 @@ import { initialPayment } from "../paymanet/payment.utils";
 import { ServiceSlotBooking } from "./serviceSlotBooking.model";
 import { IServiceSlotBookingPayload } from "./serviceSlotBooking.interface";
 import { ServiceSlotBookingSearchableFields } from "./serviceSlotBooking.constants";
+import { generateTransactionId } from "../../utils/generateTransitionId";
 
 // Create car booking service with transaction
 const createCarServiceBookingIntoDB = async (
@@ -34,28 +35,33 @@ const createCarServiceBookingIntoDB = async (
       throw new AppError(httpStatus.NOT_FOUND, "Service is not found");
     }
 
-    // Find the car booking slot by ID
-    const isCarBookingSlotExisting = await ServiceSlot.findById(
-      payload.slotId,
-    ).session(session);
-    if (!isCarBookingSlotExisting) {
-      throw new AppError(httpStatus.NOT_FOUND, "Slot is not found");
-    }
+    // Check if all slots in the array are available
+    const slotsToBook = await ServiceSlot.find({
+      _id: { $in: payload.slotId },
+      isBooked: "available",
+    }).session(session);
 
-    // Check if the slot is available
-    if (isCarBookingSlotExisting.isBooked === "available") {
-      // Update the slot to booked
-      await ServiceSlot.findByIdAndUpdate(
-        payload.slotId,
-        { isBooked: "booked" },
-        { new: true, runValidators: true, session },
-      );
-    } else {
+    if (slotsToBook.length === 0) {
       throw new AppError(
         httpStatus.BAD_REQUEST,
-        `Slot is already ${isCarBookingSlotExisting.isBooked}`,
+        "Sorry, Right now service slots are not available",
       );
     }
+
+    // Update all slots to booked
+    const isUpdate = await ServiceSlot.updateMany(
+      { _id: { $in: payload.slotId } },
+      { isBooked: "booked" },
+      { session, new: true, runValidators: true },
+    );
+
+    if (!isUpdate) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "Sorry, Right now service slots are not available",
+      );
+    }
+    const generateTransitionId = generateTransactionId();
 
     // Create the car service booking
     const result = await ServiceSlotBooking.create(
@@ -64,6 +70,12 @@ const createCarServiceBookingIntoDB = async (
           customer: customer._id,
           service: payload.serviceId,
           slot: payload.slotId,
+          transitionId: generateTransitionId,
+          name: payload.name,
+          email: payload.email,
+          phone: payload.phone,
+          address: payload.address,
+          totalPrice: payload.totalPrice,
           vehicleType: payload.vehicleType,
           vehicleBrand: payload.vehicleBrand,
           vehicleModel: payload.vehicleModel,
@@ -71,26 +83,35 @@ const createCarServiceBookingIntoDB = async (
           registrationPlate: payload.registrationPlate,
         },
       ],
-      {
-        session,
-      },
+      { session },
     );
 
     // Populate the result with related data
-    const populateResult = await ServiceSlotBooking.findById(result[0]._id)
+    const populatedResult = await ServiceSlotBooking.findById(result[0]._id)
       .populate("customer")
       .populate("service")
       .populate("slot")
       .session(session);
 
-    // payment calling
-    initialPayment();
+    // Payment processing
+    const paymentData = {
+      transitionId: result[0].transitionId,
+      amount: payload.totalPrice,
+      customerEmail: customer.email,
+      customerName: customer.name,
+      customerNumber: customer.phone,
+      customerAddress: customer.address,
+    };
+
+    const paymentSession = await initialPayment(paymentData);
+
+    console.log(paymentSession);
 
     // Commit the transaction
     await session.commitTransaction();
     session.endSession();
 
-    return populateResult;
+    return { paymentSession, data: populatedResult };
   } catch (error) {
     // Abort the transaction in case of an error
     await session.abortTransaction();

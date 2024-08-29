@@ -7,16 +7,17 @@ import { CarServiceBookingService as ServiceSlotBookingService } from "./service
 const createServiceSlotBooking = CatchAsync(async (req, res) => {
   const { email } = req.user;
 
-  const result = await ServiceSlotBookingService.createServiceSlotBookingIntoDB(
-    req.body,
-    email,
-  );
+  const { paymentSession, data } =
+    await ServiceSlotBookingService.createServiceSlotBookingIntoDB(
+      req.body,
+      email,
+    );
 
   SendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Booking successful",
-    data: result,
+    message: "Booking successfully",
+    data: { paymentSession, booking: data },
   });
 });
 

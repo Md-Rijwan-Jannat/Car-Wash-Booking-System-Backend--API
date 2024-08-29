@@ -5,9 +5,10 @@ import { ServiceSlotRoutes } from "../modules/serviceSlot/serviceSlot.routes";
 import { AuthLoginRoutes } from "../modules/auth/auth.routes";
 import { websiteReviewRoutes } from "../modules/websiteReview/websiteReview.routes";
 import {
-  CarServiceBookingRoutes,
-  MyCarServiceBookingRoutes,
-} from "../modules/carServiceBooking/serviceSlotBooking.routes";
+  MyServiceSlotBookingRoutes,
+  ServiceSlotBookingRoutes,
+} from "../modules/serviceSlotBooking/serviceSlotBooking.routes";
+import { PaymentRoutes } from "../modules/paymanet/payment.routes";
 
 const router = Router();
 
@@ -26,11 +27,11 @@ const appRoutesModel = [
   },
   {
     path: "/bookings",
-    routeFile: CarServiceBookingRoutes,
+    routeFile: ServiceSlotBookingRoutes,
   },
   {
     path: "/my-bookings",
-    routeFile: MyCarServiceBookingRoutes,
+    routeFile: MyServiceSlotBookingRoutes,
   },
   {
     path: "/website-reviews",
@@ -39,6 +40,10 @@ const appRoutesModel = [
   {
     path: "/auth",
     routeFile: AuthLoginRoutes,
+  },
+  {
+    path: "/payment",
+    routeFile: PaymentRoutes,
   },
 ];
 

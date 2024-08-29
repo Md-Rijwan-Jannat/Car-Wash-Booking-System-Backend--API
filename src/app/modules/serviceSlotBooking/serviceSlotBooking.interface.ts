@@ -1,5 +1,4 @@
 import { Types } from "mongoose";
-
 export type TVehicleType =
   | "car"
   | "truck"
@@ -15,10 +14,15 @@ export type TVehicleType =
 
 export interface IServiceSlotBooking {
   customer?: Types.ObjectId;
-  service: Types.ObjectId;
-  slot: Types.ObjectId;
+  service: Types.ObjectId[];
+  slot: Types.ObjectId[];
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
   transitionId: string;
-  paymentStatus: "pending" | "success";
+  paymentStatus: "Pending" | "Paid" | "Failed";
+  totalPrice: number;
   vehicleType: TVehicleType;
   vehicleBrand: string;
   vehicleModel: string;

@@ -1,28 +1,43 @@
 import axios from "axios";
 import config from "../../config";
+import { IPaymentData } from "./paymanet.interface";
 
-export const initialPayment = async () => {
+export const initialPayment = async (paymentData: IPaymentData) => {
   const response = await axios.post(config.aamarpay_url!, {
     store_id: config.store_id,
     signature_key: config.signature_key,
-    tran_id: "Rijwan123456",
-    success_url: "http://www.merchantdomain.com/suc esspage.html",
-    fail_url: "http://www.merchantdomain.com/faile dpage.html",
-    cancel_url: "http://www.merchantdomain.com/can cellpage.html",
-    amount: "10.0",
+    tran_id: paymentData.transitionId,
+    success_url: `http://localhost:5000/api/payment/conformation?transitionId=${paymentData.transitionId}&ststus=success`,
+    fail_url: `http://localhost:5173/services`,
+    cancel_url: "http://localhost:5173/booking",
+    amount: paymentData.amount,
     currency: "BDT",
     desc: "Merchant Registration Payment",
-    cus_name: "Name",
-    cus_email: "payer@merchantcusomter.com",
-    cus_add1: "House B-158 Road 22",
-    cus_add2: "Mohakhali DOHS",
-    cus_city: "Dhaka",
-    cus_state: "Dhaka",
+    cus_name: paymentData.customerName,
+    cus_email: paymentData.customerEmail,
+    cus_add1: paymentData.customerAddress,
+    cus_add2: "N/A",
+    cus_city: "N/A",
+    cus_state: "N/A",
     cus_postcode: "1206",
     cus_country: "Bangladesh",
-    cus_phone: "+8801704",
+    cus_phone: paymentData.customerNumber,
     type: "json",
   });
 
-  console.log("response=>", response);
+  return response.data;
+};
+
+// verify payment
+export const verifyPayment = async (transitionId: string) => {
+  const response = await axios.get(config.payment_verify_url!, {
+    params: {
+      request_id: transitionId,
+      store_id: config.store_id,
+      signature_key: config.signature_key,
+      type: "json",
+    },
+  });
+
+  return response.data;
 };

@@ -29,5 +29,5 @@ router_2.get(
   ServiceSlotBookingController.getAllMyServiceSlotBooking,
 );
 
-export const CarServiceBookingRoutes = router_1;
-export const MyCarServiceBookingRoutes = router_2;
+export const ServiceSlotBookingRoutes = router_1;
+export const MyServiceSlotBookingRoutes = router_2;
