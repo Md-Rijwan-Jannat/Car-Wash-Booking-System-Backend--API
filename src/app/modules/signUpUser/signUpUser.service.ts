@@ -2,6 +2,7 @@ import httpStatus from "http-status";
 import { AppError } from "../../error/AppError";
 import { ISignUPUser } from "./signUpUser.interface";
 import { SignUPUser } from "./signUpUser.model";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 // ---> user signup service
 const signUpUserAccountIntoDB = async (payload: ISignUPUser) => {
@@ -12,6 +13,46 @@ const signUpUserAccountIntoDB = async (payload: ISignUPUser) => {
   }
   const result = await SignUPUser.create(payload);
   return result;
+};
+
+// ---> getAllUserFromDB service
+const getAllUserFromDB = async (query: Record<string, unknown>) => {
+  const getAllUserQueryBuilder = new QueryBuilder(
+    SignUPUser.find({ role: "user" }),
+    query,
+  )
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await getAllUserQueryBuilder.modelQuery;
+  const meta = await getAllUserQueryBuilder.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
+
+// ---> getAllAdminFromDB service
+const getAllAdminFromDB = async (query: Record<string, unknown>) => {
+  const getAllUserQueryBuilder = new QueryBuilder(
+    SignUPUser.find({ role: "admin" }),
+    query,
+  )
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await getAllUserQueryBuilder.modelQuery;
+  const meta = await getAllUserQueryBuilder.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 // ---> get user service
@@ -38,13 +79,17 @@ const updateUserAccountIntoDB = async (
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
-  const result = await SignUPUser.findByIdAndUpdate({ _id: userId }, payload);
+  const result = await SignUPUser.findByIdAndUpdate({ _id: userId }, payload, {
+    new: true,
+  });
 
   return result;
 };
 
 export const SignUpServices = {
   signUpUserAccountIntoDB,
+  getAllUserFromDB,
+  getAllAdminFromDB,
   getUserFromDB,
   updateUserAccountIntoDB,
 };

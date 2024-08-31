@@ -7,7 +7,7 @@ import { GlobalError } from "./app/middlewares/GlobalError";
 
 const app: Application = express();
 
-// middleware parser
+// Middleware parser
 app.use(express.json());
 app.use(cookieParser());
 app.use(
@@ -25,10 +25,10 @@ app.get("/", (req, res) => {
   Promise.reject();
 });
 
-// not found error handler
+// Not found error handler
 app.use("*", NotFound);
 
-// global error handler
+// Global error handler
 app.use(GlobalError);
 
 export default app;

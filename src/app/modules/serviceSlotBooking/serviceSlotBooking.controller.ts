@@ -37,10 +37,11 @@ const getAllServiceSlotBooking = CatchAsync(async (req, res) => {
 
 // ---> get all my car service booking controller
 const getAllMyServiceSlotBooking = CatchAsync(async (req, res) => {
+  const { email } = req.user;
   const result =
     await ServiceSlotBookingService.getAllMyServiceSlotBookingFromDB(
-      req.user,
       req.query,
+      email,
     );
 
   SendResponse(res, {

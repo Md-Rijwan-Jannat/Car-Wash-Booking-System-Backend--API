@@ -15,4 +15,7 @@ export default {
   signature_key: process.env.SIGNATURE_KEY,
   aamarpay_url: process.env.AAMARPAY_URL,
   payment_verify_url: process.env.PAYMENT_VERIFY_URL,
+  backend_live_url: process.env.BACKEND_LIVE_URL,
+  frontend_live_url: process.env.FRONTEND_LIVE_URL,
+  frontend_base_url: process.env.FRONTEND_BASE_URL,
 };

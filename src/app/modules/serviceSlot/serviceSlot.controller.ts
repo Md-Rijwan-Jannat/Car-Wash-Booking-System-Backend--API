@@ -1,11 +1,11 @@
 import httpStatus from "http-status";
 import { CatchAsync } from "../../utils/catchAsync";
 import { SendResponse } from "../../utils/sendResponse";
-import { CarBookingSlotService } from "./serviceSlot.service";
+import { ServicesSlotsService } from "./serviceSlot.service";
 
 // ---> get all car booking slot controller
 const createServiceSlot = CatchAsync(async (req, res) => {
-  const result = await CarBookingSlotService.createServiceSlotIntoDB(req.body);
+  const result = await ServicesSlotsService.createServiceSlotIntoDB(req.body);
 
   SendResponse(res, {
     statusCode: httpStatus.OK,
@@ -16,8 +16,8 @@ const createServiceSlot = CatchAsync(async (req, res) => {
 });
 
 // ---> create car booking slot controller
-const getAllAvailableServiceSlot = CatchAsync(async (req, res) => {
-  const result = await CarBookingSlotService.getAllAvailableServiceSlotsFromDB(
+const getAllAvailableServiceSlots = CatchAsync(async (req, res) => {
+  const result = await ServicesSlotsService.getAllAvailableServiceSlotsFromDB(
     req.query,
   );
 
@@ -30,10 +30,10 @@ const getAllAvailableServiceSlot = CatchAsync(async (req, res) => {
 });
 
 // ---> get single car booking slot controller
-const getAllServiceSlotWithService = CatchAsync(async (req, res) => {
+const getServiceAllSlots = CatchAsync(async (req, res) => {
   const { id: serviceId } = req.params;
   const result =
-    await CarBookingSlotService.getAllServiceSlotsFromDB(serviceId);
+    await ServicesSlotsService.getAllServiceAllSlotsFromDB(serviceId);
 
   SendResponse(res, {
     statusCode: httpStatus.OK,
@@ -43,10 +43,24 @@ const getAllServiceSlotWithService = CatchAsync(async (req, res) => {
   });
 });
 
+// ---> get all car services slots controller
+const getAllServiceSlots = CatchAsync(async (req, res) => {
+  const result = await ServicesSlotsService.getAllServicesSlotsFromDB(
+    req.query,
+  );
+
+  SendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All services slots are retrieved successfully",
+    data: result,
+  });
+});
+
 // ---> update car booking slot controller
 const updateServiceSlotStatus = CatchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await CarBookingSlotService.updateServiceSlotStatusFromDB(
+  const result = await ServicesSlotsService.updateServiceSlotStatusFromDB(
     req.body,
     id,
   );
@@ -59,9 +73,10 @@ const updateServiceSlotStatus = CatchAsync(async (req, res) => {
   });
 });
 
-export const CarBookingSlotController = {
-  createServiceSlot: createServiceSlot,
-  getAllAvailableServiceSlots: getAllAvailableServiceSlot,
-  getAllServiceSlots: getAllServiceSlotWithService,
-  updateServiceSlotStatus: updateServiceSlotStatus,
+export const ServicesSlotsController = {
+  createServiceSlot,
+  getAllAvailableServiceSlots,
+  getServiceAllSlots,
+  getAllServiceSlots,
+  updateServiceSlotStatus,
 };

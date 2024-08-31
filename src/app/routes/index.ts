@@ -47,6 +47,7 @@ const appRoutesModel = [
   },
 ];
 
+// Register routes
 appRoutesModel.forEach((route) => router.use(route.path, route.routeFile));
 
 export const Routes = router;

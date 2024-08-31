@@ -3,13 +3,15 @@ import config from "../../config";
 import { IPaymentData } from "./paymanet.interface";
 
 export const initialPayment = async (paymentData: IPaymentData) => {
+  const url = `${config.node_dev === "development" ? config.frontend_base_url : config.frontend_live_url}`;
+
   const response = await axios.post(config.aamarpay_url!, {
     store_id: config.store_id,
     signature_key: config.signature_key,
     tran_id: paymentData.transitionId,
-    success_url: `http://localhost:5000/api/payment/conformation?transitionId=${paymentData.transitionId}&ststus=success`,
-    fail_url: `http://localhost:5173/services`,
-    cancel_url: "http://localhost:5173/booking",
+    success_url: `${url}/api/payment/conformation?transitionId=${paymentData.transitionId}&ststus=success`,
+    fail_url: `${url}/services`,
+    cancel_url: `${url}`,
     amount: paymentData.amount,
     currency: "BDT",
     desc: "Merchant Registration Payment",

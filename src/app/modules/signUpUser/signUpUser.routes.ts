@@ -13,6 +13,9 @@ router.post(
   SignUpUserController.signUpUserAccount,
 );
 
+router.get("/users", Auth(USER_ROLE.admin), SignUpUserController.getAllUser);
+router.get("/admins", Auth(USER_ROLE.admin), SignUpUserController.getAllAdmin);
+
 router.get(
   "/:email",
   Auth(USER_ROLE.admin, USER_ROLE.user),

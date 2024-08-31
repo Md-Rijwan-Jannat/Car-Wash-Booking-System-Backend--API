@@ -21,6 +21,8 @@ const auth = (...requiredUserRole: TUserRole[]) => {
 
     const { email, role, iat } = decoded;
 
+    console.log(decoded);
+
     const user = await SignUPUser.findOne({ email });
 
     if (!user) {

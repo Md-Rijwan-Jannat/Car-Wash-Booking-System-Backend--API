@@ -83,7 +83,7 @@ const paymentConformationIntoDB = async (transitionId: string) => {
             <div class="success-icon"><img src="${paymentStatus === "success" ? "https://img.icons8.com/?size=100&id=123575&format=png&color=FAB005" : "https://img.icons8.com/?size=100&id=120650&format=png&color=FF5555"}" /></div>
             <h1>${message}</h1>
             <p>${paymentStatus === "success" ? "Thank you for your payment. Your transaction has been completed successfully." : "There was an issue with your payment. Please try again or contact support."}</p>
-            <a href="http://localhost:5173/booking" class="button">Return to Home</a>
+            <a href="http://localhost:5173/services" class="button">Return to Home</a>
         </div>
     </body>
     </html>

@@ -4,7 +4,6 @@ import { AppError } from "../../error/AppError";
 import { CarService } from "../carService/carService.model";
 import { ServiceSlot } from "../serviceSlot/serviceSlot.model";
 import { SignUPUser } from "../signUpUser/signUpUser.model";
-import { JwtPayload } from "jsonwebtoken";
 import QueryBuilder from "../../builder/QueryBuilder";
 import { initialPayment } from "../paymanet/payment.utils";
 import { ServiceSlotBooking } from "./serviceSlotBooking.model";
@@ -13,7 +12,7 @@ import { ServiceSlotBookingSearchableFields } from "./serviceSlotBooking.constan
 import { generateTransactionId } from "../../utils/generateTransitionId";
 
 // Create car booking service with transaction
-const createCarServiceBookingIntoDB = async (
+const createServiceSlotBookingIntoDB = async (
   payload: IServiceSlotBookingPayload,
   email: string,
 ) => {
@@ -121,7 +120,7 @@ const createCarServiceBookingIntoDB = async (
 };
 
 // ---> get all car service booking data
-const getAllCarServiceBookingFromDB = async (
+const getAllServiceSlotBookingFromDB = async (
   query: Record<string, unknown>,
 ) => {
   const carServiceBookingQueryBuilder = new QueryBuilder(
@@ -151,11 +150,13 @@ const getAllCarServiceBookingFromDB = async (
 };
 
 // ---> get all my car service booking data
-const getAllMyCarServiceBookingFromDB = async (
+const getAllMyServiceSlotBookingFromDB = async (
   query: Record<string, unknown>,
-  payload: JwtPayload,
+  email: string,
 ) => {
-  const isUserExisting = await SignUPUser.findOne({ email: payload.email });
+  const isUserExisting = await SignUPUser.findOne({ email });
+
+  console.log(isUserExisting, email);
 
   const myCarServiceBookingQueryBuilder = new QueryBuilder(
     ServiceSlotBooking.find({ customer: isUserExisting?._id })
@@ -182,8 +183,9 @@ const getAllMyCarServiceBookingFromDB = async (
     result,
   };
 };
+
 export const CarServiceBookingService = {
-  createServiceSlotBookingIntoDB: createCarServiceBookingIntoDB,
-  getAllServiceSlotBookingFromDB: getAllCarServiceBookingFromDB,
-  getAllMyServiceSlotBookingFromDB: getAllMyCarServiceBookingFromDB,
+  createServiceSlotBookingIntoDB,
+  getAllServiceSlotBookingFromDB,
+  getAllMyServiceSlotBookingFromDB,
 };

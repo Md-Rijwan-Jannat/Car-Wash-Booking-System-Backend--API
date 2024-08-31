@@ -24,7 +24,7 @@ router_1.get(
 );
 
 router_2.get(
-  "/",
+  "/", // Ensure the route path is consistent
   Auth(USER_ROLE.user),
   ServiceSlotBookingController.getAllMyServiceSlotBooking,
 );

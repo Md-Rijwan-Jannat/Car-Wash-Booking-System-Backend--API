@@ -65,7 +65,7 @@ const getAllAvailableServiceSlotsFromDB = async (
   };
 };
 
-const getAllServiceSlotsFromDB = async (serviceId: string) => {
+const getAllServiceAllSlotsFromDB = async (serviceId: string) => {
   const result = await ServiceSlot.find({ service: serviceId }).populate(
     "service",
   );
@@ -78,6 +78,22 @@ const getAllServiceSlotsFromDB = async (serviceId: string) => {
   }
 
   return result;
+};
+
+const getAllServicesSlotsFromDB = async (query: Record<string, unknown>) => {
+  const serviceSlotsQueryBuilder = new QueryBuilder(ServiceSlot.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await serviceSlotsQueryBuilder.modelQuery.populate("service");
+  const meta = await serviceSlotsQueryBuilder.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 const updateServiceSlotStatusFromDB = async (
@@ -113,9 +129,10 @@ const updateServiceSlotStatusFromDB = async (
   return result;
 };
 
-export const CarBookingSlotService = {
+export const ServicesSlotsService = {
   createServiceSlotIntoDB,
   getAllAvailableServiceSlotsFromDB,
-  getAllServiceSlotsFromDB,
+  getAllServiceAllSlotsFromDB,
+  getAllServicesSlotsFromDB,
   updateServiceSlotStatusFromDB,
 };

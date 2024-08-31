@@ -15,6 +15,29 @@ const signUpUserAccount = CatchAsync(async (req, res) => {
   });
 });
 
+// ---> getAllUser  controller
+const getAllUser = CatchAsync(async (req, res) => {
+  const result = await SignUpServices.getAllUserFromDB(req.query);
+
+  SendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Get all users retrieved successfully!",
+    data: result,
+  });
+});
+// ---> getAllAdmin  controller
+const getAllAdmin = CatchAsync(async (req, res) => {
+  const result = await SignUpServices.getAllAdminFromDB(req.query);
+
+  SendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Get all users retrieved successfully!",
+    data: result,
+  });
+});
+
 // ---> getUser  controller
 const getUser = CatchAsync(async (req, res) => {
   const { email } = req.user;
@@ -47,6 +70,8 @@ const updateUserAccount = CatchAsync(async (req, res) => {
 
 export const SignUpUserController = {
   signUpUserAccount,
+  getAllUser,
+  getAllAdmin,
   getUser,
   updateUserAccount,
 };
