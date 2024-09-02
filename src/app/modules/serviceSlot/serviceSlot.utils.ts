@@ -1,3 +1,5 @@
+import httpStatus from "http-status";
+import { AppError } from "../../error/AppError";
 import { ICarService } from "./serviceSlot.interface";
 import { ServiceSlot } from "./serviceSlot.model";
 
@@ -43,7 +45,8 @@ const generateTimeSlots = async (payload: ICarService, duration: number) => {
         existingSlot.isBooked === "available" ||
         existingSlot.isBooked === "canceled"
       ) {
-        throw new Error(
+        throw new AppError(
+          httpStatus.CONFLICT,
           `This slot service at ${startTime} to ${endTime} is ${existingSlot.isBooked === "available" ? "already" : ""} ${existingSlot.isBooked}`,
         );
       }

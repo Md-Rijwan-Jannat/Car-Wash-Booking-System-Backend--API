@@ -1,26 +1,28 @@
+import config from "../../config";
 import { ServiceSlotBooking } from "../serviceSlotBooking/serviceSlotBooking.model";
 import { verifyPayment } from "./payment.utils";
 
-const paymentConformationIntoDB = async (transitionId: string) => {
-  const verifyResponse = await verifyPayment(transitionId);
+const paymentConformationIntoDB = async (
+  transitionId: string,
+  status: string,
+) => {
+  let paymentStatus = "failed";
+  let message = "Payment Failed. Please try again.";
 
-  let paymentStatus;
-  let message;
+  if (status === "success") {
+    const verifyResponse = await verifyPayment(transitionId);
 
-  if (verifyResponse && verifyResponse.pay_status === "Successful") {
-    // Update the payment status and return the updated document
-    await ServiceSlotBooking.findOneAndUpdate(
-      { transitionId },
-      { paymentStatus: "Paid" },
-      { new: true },
-    );
+    if (verifyResponse && verifyResponse.pay_status === "Successful") {
+      // Update the payment status and return the updated document
+      await ServiceSlotBooking.findOneAndUpdate(
+        { transitionId },
+        { paymentStatus: "Paid" },
+        { new: true },
+      );
 
-    paymentStatus = "success";
-
-    message = "Payment Successful!";
-  } else {
-    paymentStatus = "failed";
-    message = "Payment Failed. Please try again.";
+      paymentStatus = "success";
+      message = "Payment Successful!";
+    }
   }
 
   // Return the dynamically generated HTML
@@ -49,7 +51,7 @@ const paymentConformationIntoDB = async (transitionId: string) => {
                 text-align: center;
             }
             .container h1 {
-                color: ${paymentStatus === "success" ? "#F5A524" : "#DA0000"};
+                color: ${paymentStatus === "success" ? "#F5A524" : "#F5A524"};
                 font-size: 2.5rem;
                 margin-bottom: 20px;
             }
@@ -60,13 +62,13 @@ const paymentConformationIntoDB = async (transitionId: string) => {
             }
             .success-icon {
                 font-size: 4rem;
-                color: ${paymentStatus === "success" ? "#FDF1DC" : "#DA0000"};
+                color: ${paymentStatus === "success" ? "#FDF1DC" : "#FDF1DC"};
                 margin-bottom: 20px;
             }
             .button {
                 display: inline-block;
-                background-color: ${paymentStatus === "success" ? "#FDF1DC" : "#FFC7C7"};
-                color: ${paymentStatus === "success" ? "#F5A524" : "#DA0000"};
+                background-color: ${paymentStatus === "success" ? "#FDF1DC" : "#FDF1DC"};
+                color: ${paymentStatus === "success" ? "#F5A524" : "#F5A524"};
                 padding: 15px 30px;
                 text-decoration: none;
                 border-radius: 5px;
@@ -80,10 +82,10 @@ const paymentConformationIntoDB = async (transitionId: string) => {
     </head>
     <body>
         <div class="container">
-            <div class="success-icon"><img src="${paymentStatus === "success" ? "https://img.icons8.com/?size=100&id=123575&format=png&color=FAB005" : "https://img.icons8.com/?size=100&id=120650&format=png&color=FF5555"}" /></div>
+            <div class="success-icon"><img src="${paymentStatus === "success" ? "https://img.icons8.com/?size=100&id=123575&format=png&color=FAB005" : "https://img.icons8.com/?size=100&id=7703&format=png&color=FAB005"}" /></div>
             <h1>${message}</h1>
             <p>${paymentStatus === "success" ? "Thank you for your payment. Your transaction has been completed successfully." : "There was an issue with your payment. Please try again or contact support."}</p>
-            <a href="http://localhost:5173/services" class="button">Return to Home</a>
+            <a href="${config.node_dev === "development" ? config.frontend_base_url : config.frontend_live_url}" class="button">Return to Home</a>
         </div>
     </body>
     </html>

@@ -25,10 +25,10 @@ app.get("/", (req, res) => {
   Promise.reject();
 });
 
-// Not found error handler
-app.use("*", NotFound);
-
 // Global error handler
 app.use(GlobalError);
+
+// Not found error handler
+app.use("*", NotFound);
 
 export default app;
