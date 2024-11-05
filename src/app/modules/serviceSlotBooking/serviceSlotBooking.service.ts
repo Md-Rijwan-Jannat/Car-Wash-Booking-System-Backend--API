@@ -15,6 +15,7 @@ import { generateTransactionId } from "../../utils/generateTransitionId";
 const createServiceSlotBookingIntoDB = async (
   payload: IServiceSlotBookingPayload,
   email: string,
+  role: string,
 ) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -24,6 +25,10 @@ const createServiceSlotBookingIntoDB = async (
     const customer = await SignUPUser.findOne({ email });
     if (!customer) {
       throw new AppError(httpStatus.NOT_FOUND, "Customer not found");
+    }
+
+    if (role === "admin") {
+      throw new AppError(httpStatus.NOT_FOUND, "Only for user access");
     }
 
     // Find the car service by ID

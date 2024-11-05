@@ -5,12 +5,13 @@ import { CarServiceBookingService as ServiceSlotBookingService } from "./service
 
 // ---> car service booking controller
 const createServiceSlotBooking = CatchAsync(async (req, res) => {
-  const { email } = req.user;
+  const { email, role } = req.user;
 
   const { paymentSession, data } =
     await ServiceSlotBookingService.createServiceSlotBookingIntoDB(
       req.body,
       email,
+      role,
     );
 
   SendResponse(res, {

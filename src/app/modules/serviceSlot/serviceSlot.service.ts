@@ -2,13 +2,13 @@
 import httpStatus from "http-status";
 import { AppError } from "../../error/AppError";
 import { CarService } from "../carService/carService.model";
-import { IServiceSlot, ICarService } from "./serviceSlot.interface";
+import { IServiceSlot, ICarServiceSlot } from "./serviceSlot.interface";
 import { ServiceSlot } from "./serviceSlot.model";
 import { GenerateTimeSlots } from "./serviceSlot.utils";
 import QueryBuilder from "../../builder/QueryBuilder";
 import { ServiceSlotsSearchableFields } from "./serviceSlot.constants";
 
-const createServiceSlotIntoDB = async (payload: ICarService) => {
+const createServiceSlotIntoDB = async (payload: ICarServiceSlot) => {
   const isCarServiceExisting = await CarService.findById(payload.service);
 
   // ---> check if the service exists
@@ -66,9 +66,10 @@ const getAllAvailableServiceSlotsFromDB = async (
 };
 
 const getAllServiceAllSlotsFromDB = async (serviceId: string) => {
-  const result = await ServiceSlot.find({ service: serviceId }).populate(
-    "service",
-  );
+  const result = await ServiceSlot.find({
+    service: serviceId,
+    isBooked: { $in: ["available", "booked"] },
+  }).populate("service");
 
   if (result.length === 0 || !result) {
     throw new AppError(

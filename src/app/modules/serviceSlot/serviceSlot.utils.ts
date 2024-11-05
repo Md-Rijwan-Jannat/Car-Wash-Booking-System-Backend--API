@@ -1,10 +1,13 @@
 import httpStatus from "http-status";
 import { AppError } from "../../error/AppError";
-import { ICarService } from "./serviceSlot.interface";
+import { ICarServiceSlot } from "./serviceSlot.interface";
 import { ServiceSlot } from "./serviceSlot.model";
 
 // carBookingSlot.utils.ts
-const generateTimeSlots = async (payload: ICarService, duration: number) => {
+const generateTimeSlots = async (
+  payload: ICarServiceSlot,
+  duration: number,
+) => {
   const slots = [];
 
   const [startTimeHours, startTimeMinutes] = payload.startTime

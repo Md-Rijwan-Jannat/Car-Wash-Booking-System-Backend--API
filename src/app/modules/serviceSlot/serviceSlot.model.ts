@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import { ICarService } from "./serviceSlot.interface";
+import { ICarServiceSlot } from "./serviceSlot.interface";
 
-export const serviceSlotsSchema = new Schema<ICarService>({
+export const serviceSlotsSchema = new Schema<ICarServiceSlot>({
   service: {
     type: Schema.Types.ObjectId,
     required: [true, "Service ID is required"],
@@ -30,7 +30,7 @@ export const serviceSlotsSchema = new Schema<ICarService>({
   },
 });
 
-export const ServiceSlot = model<ICarService>(
+export const ServiceSlot = model<ICarServiceSlot>(
   "ServiceSlot",
   serviceSlotsSchema,
 );
